@@ -3,17 +3,91 @@
 <head>
     <meta charset="UTF-8">
     <title>Redirecting...</title>
+    <style>
+        /* Общие стили для страницы */
+        body {
+            background-color: #f0f2f5;
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        /* Контейнер для контента */
+        .container {
+            text-align: center;
+            padding: 20px;
+            background-color: #ffffff;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Заголовок */
+        h1 {
+            color: #333333;
+            margin-bottom: 20px;
+        }
+
+        /* Описание */
+        p {
+            color: #555555;
+            margin-bottom: 30px;
+        }
+
+        /* Анимация спиннера */
+        .spinner {
+            border: 8px solid #f3f3f3; /* Светло-серый */
+            border-top: 8px solid #3498db; /* Синий */
+            border-radius: 50%;
+            width: 60px;
+            height: 60px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Ссылка для ручного перенаправления */
+        .redirect-link {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #3498db;
+            color: #ffffff;
+            text-decoration: none;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+        }
+
+        .redirect-link:hover {
+            background-color: #2980b9;
+        }
+    </style>
     <script>
         document.addEventListener("DOMContentLoaded", function(){
             const params = new URLSearchParams(window.location.search);
             const url = params.get('url');
             if(url){
-                window.location.href = url;
+                // Немного задержки перед перенаправлением для отображения анимации
+                setTimeout(function(){
+                    window.location.href = url;
+                }, 2000); // 2 секунды
             }
         });
     </script>
 </head>
 <body>
-    <p>Если перенаправление не произошло автоматически, нажмите <a id="redirectLink" href="#">здесь</a>.</p>
+    <div class="container">
+        <div class="spinner"></div>
+        <h1>Идет перенаправление...</h1>
+        <p>Пожалуйста, подождите. Ваше устройство перенаправляется для установки VPN.</p>
+        <p>Если перенаправление не произошло автоматически, нажмите кнопку ниже:</p>
+        <a id="redirectLink" href="#" class="redirect-link">Установить VPN</a>
+    </div>
 </body>
 </html>
