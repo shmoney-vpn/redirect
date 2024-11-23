@@ -2,50 +2,52 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <title>Redirecting...</title>
+    <title>ShmoneyVPN - Установка</title>
     <style>
+        /* Подключение шрифта */
+        @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
+
         /* Общие стили для страницы */
         body {
-            background-color: #f0f2f5;
-            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #1abc9c, #3498db);
+            font-family: 'Roboto', sans-serif;
             display: flex;
-            flex-direction: column;
             align-items: center;
             justify-content: center;
             height: 100vh;
             margin: 0;
+            color: #fff;
         }
 
         /* Контейнер для контента */
         .container {
             text-align: center;
-            padding: 20px;
-            background-color: #ffffff;
-            border-radius: 10px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            padding: 40px;
+            background-color: rgba(0, 0, 0, 0.6);
+            border-radius: 15px;
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.3);
+            max-width: 500px;
+            width: 90%;
+            margin: 0 20px;
         }
 
-        /* Заголовок */
-        h1 {
-            color: #333333;
+        /* Логотип или название VPN */
+        .logo {
+            font-size: 42px;
+            font-weight: bold;
             margin-bottom: 20px;
-        }
-
-        /* Описание */
-        p {
-            color: #555555;
-            margin-bottom: 30px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
         }
 
         /* Анимация спиннера */
         .spinner {
-            border: 8px solid #f3f3f3; /* Светло-серый */
-            border-top: 8px solid #3498db; /* Синий */
+            border: 6px solid rgba(255, 255, 255, 0.3);
+            border-top: 6px solid #fff;
             border-radius: 50%;
-            width: 60px;
-            height: 60px;
+            width: 70px;
+            height: 70px;
             animation: spin 1s linear infinite;
-            margin: 0 auto 20px auto;
+            margin: 0 auto 30px auto;
         }
 
         @keyframes spin {
@@ -53,19 +55,28 @@
             100% { transform: rotate(360deg); }
         }
 
-        /* Ссылка для ручного перенаправления */
+        /* Описание */
+        p {
+            font-size: 18px;
+            margin-bottom: 30px;
+            line-height: 1.6;
+        }
+
+        /* Кнопка перенаправления */
         .redirect-link {
             display: inline-block;
-            padding: 10px 20px;
-            background-color: #3498db;
-            color: #ffffff;
+            padding: 15px 30px;
+            background: linear-gradient(135deg, #e74c3c, #c0392b);
+            color: #fff;
             text-decoration: none;
-            border-radius: 5px;
-            transition: background-color 0.3s ease;
+            font-size: 18px;
+            font-weight: bold;
+            border-radius: 30px;
+            transition: background 0.3s ease;
         }
 
         .redirect-link:hover {
-            background-color: #2980b9;
+            background: linear-gradient(135deg, #c0392b, #e74c3c);
         }
     </style>
     <script>
@@ -73,19 +84,22 @@
             const params = new URLSearchParams(window.location.search);
             const url = params.get('url');
             if(url){
+                // Установка href кнопки на hiddify:// ссылку
+                document.getElementById('redirectLink').href = url;
+
                 // Немного задержки перед перенаправлением для отображения анимации
                 setTimeout(function(){
                     window.location.href = url;
-                }, 2000); // 2 секунды
+                }, 3000); // 3 секунды
             }
         });
     </script>
 </head>
 <body>
     <div class="container">
+        <div class="logo">ShmoneyVPN</div>
         <div class="spinner"></div>
-        <h1>Идет перенаправление...</h1>
-        <p>Пожалуйста, подождите. Ваше устройство перенаправляется для установки VPN.</p>
+        <p>Пожалуйста, подождите. Мы готовим всё для безопасного подключения.</p>
         <p>Если перенаправление не произошло автоматически, нажмите кнопку ниже:</p>
         <a id="redirectLink" href="#" class="redirect-link">Установить VPN</a>
     </div>
