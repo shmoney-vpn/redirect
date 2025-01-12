@@ -217,6 +217,39 @@
       }
     };
 
+    // Функция для получения данных ссылки скачивания по выбранной комбинации
+    function getDownloadLink(device, app) {
+      if(app === 'hiddify') {
+        if(device === 'android') {
+          return { text: "Скачать Hiddify", url: "https://play.google.com/store/apps/details?id=app.hiddify.com" };
+        } else if(device === 'ios') {
+          return { text: "Скачать Hiddify", url: "https://apps.apple.com/us/app/hiddify-proxy-vpn/id6596777532?platform=iphone" };
+        } else if(device === 'windows') {
+          return { text: "Скачать Hiddify", url: "https://github.com/hiddify/hiddify-app/releases/latest/download/Hiddify-Windows-Setup-x64.Msix" };
+        } else if(device === 'linux') {
+          return { text: "Скачать Hiddify", url: "https://github.com/hiddify/hiddify-app/releases/latest/download/Hiddify-Linux-x64.AppImage" };
+        } else if(device === 'macos') {
+          // Для macOS можем выбрать GitHub версию
+          return { text: "Скачать Hiddify", url: "https://github.com/hiddify/hiddify-app/releases/latest/download/Hiddify-MacOS.dmg" };
+        }
+      } else if(app === 'foxray') {
+        if(device === 'ios' || device === 'macos') {
+          return { text: "Скачать FoXray", url: "https://apps.apple.com/ru/app/foxray/id6448898396" };
+        }
+      } else if(app === 'nekobox') {
+        if(device === 'android') {
+          return { text: "Скачать NekoBox", url: "https://github.com/MatsuriDayo/NekoBoxForAndroid/releases/download/1.2.9/NB4A-1.2.9-arm64-v8a.apk" };
+        }
+      } else if(app === 'nekoray') {
+        if(device === 'windows') {
+          return { text: "Скачать Nekoray", url: "https://github.com/MatsuriDayo/nekoray/releases/download/3.26/nekoray-3.26-2023-12-09-windows64.zip" };
+        } else if(device === 'linux') {
+          return { text: "Скачать Nekoray", url: "https://github.com/MatsuriDayo/nekoray/releases/download/3.26/nekoray-3.26-2023-12-09-debian-x64.deb" };
+        }
+      }
+      return null;
+    }
+
     // Функция показа выбора устройства
     function selectDevice(device) {
       selectedDevice = device;
@@ -283,6 +316,17 @@
         instructionsDiv.appendChild(stepDiv);
       });
       
+      // Если для выбранной комбинации существует ссылка, добавляем кнопку "Скачать"
+      const downloadLink = getDownloadLink(device, app);
+      if (downloadLink) {
+        const downloadBtn = document.createElement('a');
+        downloadBtn.classList.add('btn');
+        downloadBtn.href = downloadLink.url;
+        downloadBtn.textContent = downloadLink.text;
+        downloadBtn.target = "_blank";
+        instructionsDiv.appendChild(downloadBtn);
+      }
+      
       // Показываем кнопку "На главную"
       document.getElementById('backBtn').style.display = 'inline-block';
       // Кнопка "Назад" (стрелка) остаётся видимой для возврата к выбору приложения
@@ -312,7 +356,7 @@
         document.getElementById('leadText').textContent = "Выберите устройство, для которого нужна инструкция:";
         // Показать выбор устройств
         document.getElementById('deviceSelection').style.display = 'flex';
-        // Скрываем кнопку "Назад", если вернулись к начальному выбору
+        // Скрываем кнопку "Назад"
         document.getElementById('backArrow').style.display = 'none';
       }
     }
