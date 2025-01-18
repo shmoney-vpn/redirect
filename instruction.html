@@ -24,7 +24,10 @@
       box-sizing: border-box;
     }
 
-    /* Занимаем всю страницу */
+    /* 
+      Ширина/высота на 100%, чёрный фон, 
+      без прокрутки при отображении загрузчика.
+    */
     html, body {
       width: 100%;
       height: 100%;
@@ -33,16 +36,18 @@
       font-family: 'SF Pro Display Thin', -apple-system, 
                    BlinkMacSystemFont, "Segoe UI", Roboto, 
                    "Helvetica Neue", Arial, sans-serif;
-      overflow: hidden; /* Чтобы не было скролла при показе загрузчика */
+      overflow: hidden;
     }
 
-    /* Контейнер для всего контента,
-       центрируем и растягиваем на весь экран */
+    /* 
+      Тело страницы: вертикально по центру (justify-content: center),
+      но выравниваем контент слева (align-items: flex-start).
+    */
     body {
       display: flex;
       flex-direction: column;
-      justify-content: center; /* по вертикали по центру */
-      align-items: center;     /* по горизонтали по центру */
+      justify-content: center; /* центрируем по вертикали */
+      align-items: flex-start; /* выравниваем по левому краю по горизонтали */
       padding: 16px;
     }
 
@@ -72,18 +77,23 @@
       width: 100%; 
       opacity: 0; 
       transition: opacity 0.5s ease; /* Плавное появление */
+
+      /* 
+         Убираем align-items: center, 
+         чтобы заголовок и кнопки были слева.
+      */
       display: flex;
       flex-direction: column;
-      align-items: center; 
+      align-items: flex-start;
     }
 
-    /* Заголовок: чуть больше шрифт для мобильных */
+    /* Заголовок выравниваем слева */
     h1 {
-      font-size: 20px;       /* Увеличиваем размер */
-      font-weight: 600;      /* Толщина заголовка */
+      font-size: 20px;     
+      font-weight: 600;    
       margin-bottom: 16px;
-      color: #007aff;        /* Синий цвет в «телеграмном» стиле */
-      text-align: center;
+      color: #007aff;      /* Синий цвет в «телеграмном» стиле */
+      text-align: left;    /* Текст слева */
     }
 
     /* Контейнер с кнопками: занимает всю ширину */
@@ -92,22 +102,18 @@
       display: flex;
       flex-direction: column;
       gap: 8px;
-      /* Если хотите ограничить ширину на десктопах,
-         можно вернуть max-width, напр. 400-600px:
-         max-width: 400px; margin: 0 auto;
-      */
     }
 
     /* Кнопки растягиваются на всю доступную ширину */
     .os-button {
       display: flex;
       align-items: center;
-      justify-content: space-between;
+      justify-content: space-between; /* текст слева, стрелка справа */
       background-color: #2c2c2e;
       border-radius: 8px;
       text-decoration: none;
       color: #fff;
-      padding: 16px;     /* Увеличиваем высоту кнопок */
+      padding: 6px;   
       width: 100%;
     }
     .os-button:hover {
@@ -122,7 +128,7 @@
 
     /* Квадратная подложка для иконок */
     .os-icon-wrap {
-      width: 36px;   /* Делаем больше, чтобы на мобиле было удобнее */
+      width: 36px;   
       height: 36px;
       background-color: #fff; 
       border-radius: 6px;
@@ -132,20 +138,21 @@
       overflow: hidden;
     }
     .os-icon-wrap img {
-      width: 24px;   /* Иконка пропорционально больше */
+      width: 24px; 
       height: 24px;
       display: block;
     }
 
-    /* Тонкая стрелочка ">" */
+    /* Тонкая стрелочка ">" + небольшой отступ справа */
     .arrow-icon {
-      width: 14px;
-      height: 18px;
+      width: 11px;
+      height: 13px;
+      margin-right: 12px; /* Подвигаем чуть левее от правого края */
     }
     .arrow-icon path {
       fill: none;
       stroke: #888;
-      stroke-width: 1.5; /* Можно чуть увеличить для наглядности */
+      stroke-width: 1.2; 
       stroke-linecap: round;
       stroke-linejoin: round;
     }
@@ -251,16 +258,13 @@
   const loader = document.getElementById('loader');
   const main = document.getElementById('mainContent');
 
-  // Через randomTime скрываем загрузчик (fade out) и показываем контент (fade in)
+  // По истечении randomTime скрываем загрузчик (fade out) и показываем контент (fade in)
   setTimeout(() => {
-    // Ставим opacity: 0 для loader (исчезновение)
-    loader.style.opacity = '0';
+    loader.style.opacity = '0'; // Плавное исчезновение
 
-    // Когда transition на loader (0.5s) завершится, убираем loader
     setTimeout(() => {
-      loader.style.display = 'none';
-      // Делаем fade-in для основного контента
-      main.style.opacity = '1';
+      loader.style.display = 'none';   // Полностью убираем
+      main.style.opacity = '1';        // Плавное появление контента
     }, 500);
   }, randomTime);
 </script>
