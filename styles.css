@@ -1,0 +1,83 @@
+/* Dark theme */
+body {
+    background-color: #121212;
+    color: #fff;
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+.container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    padding: 20px;
+}
+
+.card {
+    background-color: rgba(255, 255, 255, 0.1);
+    border-radius: 15px;
+    margin: 10px;
+    overflow: hidden;
+    position: relative;
+    width: calc(50% - 20px);
+    max-width: 300px;
+    cursor: pointer;
+    transition: transform 0.3s ease, width 0.3s ease, max-width 0.3s ease;
+}
+
+.card:hover {
+    animation: lightning 0.5s forwards;
+}
+
+.card::before,
+.card::after {
+    content: '';
+    position: absolute;
+    opacity: 0;
+}
+
+.card:hover::before {
+    background: linear-gradient(45deg, #ff00ff, #00ffff);
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    opacity: 0.2;
+}
+
+.card:hover::after {
+    background: linear-gradient(-45deg, #ff00ff, #00ffff);
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    opacity: 0.2;
+}
+
+@keyframes lightning {
+    0% {
+        filter: brightness(1);
+    }
+    50% {
+        filter: brightness(1.2);
+    }
+    100% {
+        filter: brightness(1);
+    }
+}
+
+.content {
+    display: none;
+    padding: 20px;
+}
+
+.card.active {
+    transform: scale(1.1);
+    width: 100%;
+    max-width: 100%;
+}
+
+.card.active .content {
+    display: block;
+}

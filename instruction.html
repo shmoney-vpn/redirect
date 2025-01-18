@@ -1,365 +1,252 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Инструкция по подключению VPN</title>
+  <meta charset="UTF-8">
+  <title>Выбор ОС</title>
+
+  <!-- Подключаем локальный шрифт SF Pro Display Thin -->
   <style>
-    /* Базовый сброс стилей */
+    @font-face {
+      font-family: 'SF Pro Display Thin';
+      src: url('SF-Pro-Display-Thin.otf') format('opentype');
+      font-weight: 300; 
+      font-style: normal;
+    }
+
     * {
       margin: 0;
       padding: 0;
       box-sizing: border-box;
     }
+
+    /* Чтобы все элементы и загрузчик были по центру */
     body {
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background-color: #f7f9fc;
-      color: #333;
-      padding: 20px;
-    }
-    .container {
-      position: relative;
-      max-width: 600px;
-      margin: 0 auto;
-      background-color: #fff;
-      border-radius: 8px;
-      padding: 20px;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-    }
-    /* Стиль для кнопки "Назад" (стрелка) */
-    #backArrow {
-      position: absolute;
-      top: 15px;
-      left: 15px;
-      font-size: 24px;
-      background: none;
-      border: none;
-      color: #1a73e8;
-      cursor: pointer;
-      display: none; /* по умолчанию скрыта */
-    }
-    h1 {
-      font-size: 24px;
-      margin-bottom: 20px;
-      color: #1a73e8;
-      text-align: center;
-    }
-    .lead {
-      font-size: 18px;
-      margin-bottom: 20px;
-      text-align: center;
-    }
-    .buttons {
+      min-height: 100vh;               /* Чтобы занимало всю высоту экрана */
       display: flex;
-      flex-wrap: wrap;
+      flex-direction: column;
+      justify-content: center;         /* По вертикали по центру */
+      align-items: center;            /* По горизонтали по центру */
+      background: #000; 
+      color: #fff;
+      font-family: 'SF Pro Display Thin', -apple-system, 
+                   BlinkMacSystemFont, "Segoe UI", Roboto, 
+                   "Helvetica Neue", Arial, sans-serif;
+      padding: 16px;
+      overflow: hidden; /* Чтобы не было скролла, пока loader на экране */
+    }
+
+    /* Загрузочный экран (начально виден) */
+    #loader {
+      position: absolute;   /* Абсолютное позиционирование поверх всего */
+      top: 0; 
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: #000;     /* Чёрный фон */
+      display: flex;
       justify-content: center;
-      gap: 10px;
-      margin-bottom: 20px;
+      align-items: center;
+      z-index: 9999;        /* Поверх всего */
+      opacity: 1;           /* Начальная непрозрачность */
+      transition: opacity 0.5s ease; /* Плавное исчезновение */
     }
-    .buttons button {
-      padding: 10px 20px;
+    #loader img {
+      max-width: 200px; 
+      width: auto;
+      height: auto;
+    }
+
+    /* Основной контент (по умолчанию скрыт через opacity: 0) */
+    #mainContent {
+      opacity: 0; 
+      transition: opacity 0.5s ease; /* Плавное появление */
+      /* 
+         Так как body уже display:flex center, 
+         сам #mainContent будет тоже по центру.
+      */
+    }
+
+    /* Заголовок «Выберите операционную систему» */
+    h1 {
       font-size: 16px;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
-      background-color: #1a73e8;
-      color: #fff;
-      transition: background-color 0.3s ease;
+      font-weight: 600;
+      margin-bottom: 16px;
+      color: #007aff; /* Синий цвет в «телеграмном» стиле */
+      text-align: center; /* Дополнительно по центру текст */
     }
-    .buttons button:hover {
-      background-color: #1558b0;
-    }
-    .step {
-      margin-bottom: 15px;
+
+    /* Контейнер с кнопками */
+    .buttons-container {
       display: flex;
-      align-items: flex-start;
+      flex-direction: column;
+      gap: 8px;
+      max-width: 300px;
     }
-    .step-number {
-      min-width: 30px;
-      font-weight: bold;
-      color: #1a73e8;
-      font-size: 20px;
-    }
-    .step-text {
-      flex: 1;
-      font-size: 16px;
-      padding-left: 10px;
-    }
-    .btn {
-      display: inline-block;
+
+    /* Кнопки ОС */
+    .os-button {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background-color: #2c2c2e;
+      border-radius: 8px;
       text-decoration: none;
-      text-align: center;
-      padding: 12px 20px;
-      margin-top: 25px;
-      border-radius: 5px;
       color: #fff;
-      background-color: #28a745;
-      transition: background-color 0.3s ease;
+      padding: 9px 16px;
     }
-    .btn:hover {
-      background-color: #218838;
+    .os-button:hover {
+      background-color: #3a3a3c;
     }
-    .footer {
-      text-align: center;
-      font-size: 14px;
-      margin-top: 20px;
-      color: #888;
+
+    .os-left {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    /* Квадратная подложка для иконок (со скруглёнными углами) */
+    .os-icon-wrap {
+      width: 24px;
+      height: 24px;
+      background-color: #fff; 
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+    .os-icon-wrap img {
+      width: 20px; 
+      height: 20px;
+      display: block;
+    }
+
+    /* Стрелочка ">" (незаполненная, тонкая) */
+    .arrow-icon {
+      width: 10px;
+      height: 14px;
+    }
+    .arrow-icon path {
+      fill: none;
+      stroke: #888;
+      stroke-width: 1;
+      stroke-linecap: round;
+      stroke-linejoin: round;
     }
   </style>
 </head>
 <body>
-  <div class="container">
-    <!-- Кнопка "Назад" (стрелка) -->
-    <button id="backArrow" onclick="goBack()">&larr;</button>
-    
-    <!-- Заголовок и вступительный текст -->
-    <h1 id="title">Инструкция по подключению VPN</h1>
-    <p class="lead" id="leadText">Выберите устройство, для которого нужна инструкция:</p>
-    
-    <!-- Секция выбора устройства -->
-    <div id="deviceSelection" class="buttons">
-      <button onclick="selectDevice('ios')">iOS</button>
-      <button onclick="selectDevice('android')">Android</button>
-      <button onclick="selectDevice('windows')">Windows</button>
-      <button onclick="selectDevice('macos')">macOS</button>
-      <button onclick="selectDevice('linux')">Linux</button>
-    </div>
-    
-    <!-- Секция выбора приложения (скрыта до выбора устройства) -->
-    <div id="appSelection" class="buttons" style="display:none;"></div>
-    
-    <!-- Секция с инструкцией -->
-    <div id="instructions"></div>
-    
-    <a href="https://t.me/ShmoneyVPN_Bot" class="btn" style="display: none;" id="backBtn">На главную</a>
-    <div class="footer">ShmoneyVPN © 2025</div>
-  </div>
 
-  <script>
-    // Глобальная переменная для отслеживания текущего состояния
-    // Возможные состояния: 'deviceSelection', 'appSelection', 'instructions'
-    let currentState = 'deviceSelection';
-    let selectedDevice = null;
-    let selectedApp = null;
+<!-- Загрузочный экран -->
+<div id="loader">
+  <img src="Cloud With Lightning.webp" alt="Loading...">
+</div>
 
-    // Объект с вариантами приложений для каждого устройства
-    const appOptions = {
-      ios: [
-        { id: 'hiddify', name: 'Hiddify (удобно)' },
-        { id: 'foxray', name: 'FoXray' }
-      ],
-      android: [
-        { id: 'hiddify', name: 'Hiddify (удобно)' },
-        { id: 'nekobox', name: 'NekoBox' }
-      ],
-      windows: [
-        { id: 'hiddify', name: 'Hiddify (удобно)' },
-        { id: 'nekoray', name: 'Nekoray' }
-      ],
-      macos: [
-        { id: 'hiddify', name: 'Hiddify (удобно)' },
-        { id: 'foxray', name: 'FoXray' }
-      ],
-      linux: [
-        { id: 'hiddify', name: 'Hiddify (удобно)' },
-        { id: 'nekoray', name: 'Nekoray' }
-      ]
-    };
+<!-- Основной контент -->
+<div id="mainContent">
 
-    // Объект с инструкциями для каждой комбинации (по умолчанию)
-    const instructionsData = {
-      hiddify: {
-        title: 'Инструкция по подключению через Hiddify',
-        leadText: 'Следуйте этим шагам для настройки VPN через Hiddify:',
-        steps: [
-          'Скачайте и установите приложение Hiddify из официального магазина приложений (Google Play, App Store и т.д.).',
-          'Запустите приложение Hiddify.',
-          'В главном меню нажмите кнопку «⚡ Подключиться».',
-          'Скопируйте уникальный ключ, который вы получили в боте.',
-          'Вставьте ключ в соответствующее поле приложения.',
-          'Нажмите «Подключиться» и дождитесь успешного соединения.'
-        ]
-      },
-      foxray: {
-        title: 'Инструкция по подключению через FoXray',
-        leadText: 'Следуйте этим шагам для настройки VPN через FoXray:',
-        steps: [
-          'Получите и скопируйте ключ из бота.',
-          'Скачайте и установите приложение FoXray (доступно для iOS и macOS).',
-          'Откройте FoXray и нажмите на значок «Вставить», чтобы импортировать ключ.',
-          'Подтвердите разрешения для добавления конфигурации VPN.',
-          'Нажмите кнопку для запуска VPN и дождитесь подключения.'
-        ]
-      },
-      nekobox: {
-        title: 'Инструкция по подключению через NekoBox (Android)',
-        leadText: 'Следуйте этим шагам для настройки VPN через NekoBox:',
-        steps: [
-          'Получите и скопируйте ключ из бота.',
-          'Скачайте и установите приложение NekoBox (скачать можно с GitHub или официального источника).',
-          'Запустите приложение NekoBox.',
-          'Нажмите кнопку «Вставить» или «Импорт из буфера обмена», чтобы вставить ключ.',
-          'Выберите появившуюся конфигурацию VPN.',
-          'Нажмите кнопку запуска, чтобы установить соединение.'
-        ]
-      },
-      nekoray: {
-        title: 'Инструкция по подключению через Nekoray',
-        leadText: 'Следуйте этим шагам для настройки VPN через Nekoray:',
-        steps: [
-          'Получите и скопируйте ключ из бота.',
-          'Скачайте архив с приложением Nekoray с официального сайта или GitHub.',
-          'Распакуйте архив и запустите приложение (для Windows, Linux или macOS).',
-          'В приложении выберите опцию «Добавить профиль» и вставьте скопированный ключ.',
-          'Настройте необходимые параметры (например, системный прокси, режим TUN и т.д.).',
-          'Нажмите кнопку запуска VPN и дождитесь подключения.'
-        ]
-      }
-    };
+  <h1>Выберите операционную систему</h1>
 
-    // Функция для получения данных ссылки скачивания по выбранной комбинации
-    function getDownloadLink(device, app) {
-      if(app === 'hiddify') {
-        if(device === 'android') {
-          return { text: "Скачать Hiddify", url: "https://play.google.com/store/apps/details?id=app.hiddify.com" };
-        } else if(device === 'ios') {
-          return { text: "Скачать Hiddify", url: "https://apps.apple.com/us/app/hiddify-proxy-vpn/id6596777532?platform=iphone" };
-        } else if(device === 'windows') {
-          return { text: "Скачать Hiddify", url: "https://github.com/hiddify/hiddify-app/releases/latest/download/Hiddify-Windows-Setup-x64.Msix" };
-        } else if(device === 'linux') {
-          return { text: "Скачать Hiddify", url: "https://github.com/hiddify/hiddify-app/releases/latest/download/Hiddify-Linux-x64.AppImage" };
-        } else if(device === 'macos') {
-          // Для macOS можем выбрать GitHub версию
-          return { text: "Скачать Hiddify", url: "https://github.com/hiddify/hiddify-app/releases/latest/download/Hiddify-MacOS.dmg" };
-        }
-      } else if(app === 'foxray') {
-        if(device === 'ios' || device === 'macos') {
-          return { text: "Скачать FoXray", url: "https://apps.apple.com/ru/app/foxray/id6448898396" };
-        }
-      } else if(app === 'nekobox') {
-        if(device === 'android') {
-          return { text: "Скачать NekoBox", url: "https://github.com/MatsuriDayo/NekoBoxForAndroid/releases/download/1.2.9/NB4A-1.2.9-arm64-v8a.apk" };
-        }
-      } else if(app === 'nekoray') {
-        if(device === 'windows') {
-          return { text: "Скачать Nekoray", url: "https://github.com/MatsuriDayo/nekoray/releases/download/3.26/nekoray-3.26-2023-12-09-windows64.zip" };
-        } else if(device === 'linux') {
-          return { text: "Скачать Nekoray", url: "https://github.com/MatsuriDayo/nekoray/releases/download/3.26/nekoray-3.26-2023-12-09-debian-x64.deb" };
-        }
-      }
-      return null;
-    }
+  <div class="buttons-container">
+    <!-- iOS -->
+    <a href="#" class="os-button">
+      <div class="os-left">
+        <div class="os-icon-wrap">
+          <img 
+            src="https://www.svgrepo.com/show/473543/apple.svg" 
+            alt="iOS">
+        </div>
+        <span>iOS</span>
+      </div>
+      <svg viewBox="0 0 6 8" class="arrow-icon" xmlns="http://www.w3.org/2000/svg">
+        <path d="M1 1 L5 4 L1 7" />
+      </svg>
+    </a>
 
-    // Функция показа выбора устройства
-    function selectDevice(device) {
-      selectedDevice = device;
-      currentState = 'appSelection';
-      // Скрываем выбор устройства
-      document.getElementById('deviceSelection').style.display = 'none';
-      
-      // Обновляем заголовок и вступительный текст
-      document.getElementById('title').textContent = "Выберите вариант подключения";
-      document.getElementById('leadText').textContent = "Выберите приложение для вашего устройства (" + device.toUpperCase() + ")";
-      
-      // Формируем кнопки выбора приложения на основе выбранного устройства
-      const appSelectionDiv = document.getElementById('appSelection');
-      appSelectionDiv.innerHTML = "";
-      appOptions[device].forEach(option => {
-        const btn = document.createElement('button');
-        btn.textContent = option.name;
-        btn.onclick = function() { selectApp(device, option.id); };
-        appSelectionDiv.appendChild(btn);
-      });
-      
-      // Показываем блок выбора приложения
-      appSelectionDiv.style.display = 'flex';
-      // Показываем кнопку "Назад"
-      document.getElementById('backArrow').style.display = 'block';
-    }
+    <!-- Android -->
+    <a href="#" class="os-button">
+      <div class="os-left">
+        <div class="os-icon-wrap">
+          <img 
+            src="https://www.svgrepo.com/show/475631/android-color.svg"
+            alt="Android">
+        </div>
+        <span>Android</span>
+      </div>
+      <svg viewBox="0 0 6 8" class="arrow-icon" xmlns="http://www.w3.org/2000/svg">
+        <path d="M1 1 L5 4 L1 7" />
+      </svg>
+    </a>
 
-    // Функция выбора приложения – показываем инструкцию
-    function selectApp(device, app) {
-      selectedApp = app;
-      currentState = 'instructions';
-      // Скрываем блоки выбора
-      document.getElementById('deviceSelection').style.display = 'none';
-      document.getElementById('appSelection').style.display = 'none';
+    <!-- MacOS -->
+    <a href="#" class="os-button">
+      <div class="os-left">
+        <div class="os-icon-wrap">
+          <img 
+            src="https://img.icons8.com/color/48/mac-logo.png"
+            alt="macOS">
+        </div>
+        <span>MacOS</span>
+      </div>
+      <svg viewBox="0 0 6 8" class="arrow-icon" xmlns="http://www.w3.org/2000/svg">
+        <path d="M1 1 L5 4 L1 7" />
+      </svg>
+    </a>
 
-      // Получаем данные инструкции для выбранного приложения
-      const data = instructionsData[app] || {
-        title: "Инструкция по подключению VPN",
-        leadText: "Следуйте базовым шагам для подключения к VPN:",
-        steps: [
-          "Получите ключ в боте.",
-          "Скачайте нужное приложение для вашего устройства.",
-          "Вставьте ключ и нажмите «Подключиться»."
-        ]
-      };
+    <!-- Windows -->
+    <a href="#" class="os-button">
+      <div class="os-left">
+        <div class="os-icon-wrap">
+          <img 
+            src="https://www.svgrepo.com/show/382713/windows-applications.svg"
+            alt="Windows">
+        </div>
+        <span>Windows</span>
+      </div>
+      <svg viewBox="0 0 6 8" class="arrow-icon" xmlns="http://www.w3.org/2000/svg">
+        <path d="M1 1 L5 4 L1 7" />
+      </svg>
+    </a>
 
-      // Обновляем страницу: заголовок, вступительный текст, шаги
-      document.getElementById('title').textContent = data.title;
-      document.getElementById('leadText').textContent = data.leadText;
-      
-      const instructionsDiv = document.getElementById('instructions');
-      instructionsDiv.innerHTML = "";
-      data.steps.forEach((step, index) => {
-        const stepDiv = document.createElement('div');
-        stepDiv.classList.add('step');
-        const stepNumber = document.createElement('div');
-        stepNumber.classList.add('step-number');
-        stepNumber.textContent = (index + 1) + '.';
-        const stepText = document.createElement('div');
-        stepText.classList.add('step-text');
-        stepText.textContent = step;
-        stepDiv.appendChild(stepNumber);
-        stepDiv.appendChild(stepText);
-        instructionsDiv.appendChild(stepDiv);
-      });
-      
-      // Если для выбранной комбинации существует ссылка, добавляем кнопку "Скачать"
-      const downloadLink = getDownloadLink(device, app);
-      if (downloadLink) {
-        const downloadBtn = document.createElement('a');
-        downloadBtn.classList.add('btn');
-        downloadBtn.href = downloadLink.url;
-        downloadBtn.textContent = downloadLink.text;
-        downloadBtn.target = "_blank";
-        instructionsDiv.appendChild(downloadBtn);
-      }
-      
-      // Показываем кнопку "На главную"
-      document.getElementById('backBtn').style.display = 'inline-block';
-      // Кнопка "Назад" (стрелка) остаётся видимой для возврата к выбору приложения
-    }
+    <!-- Linux -->
+    <a href="#" class="os-button">
+      <div class="os-left">
+        <div class="os-icon-wrap">
+          <img 
+            src="https://upload.wikimedia.org/wikipedia/commons/3/35/Tux.svg"
+            alt="Linux">
+        </div>
+        <span>Linux</span>
+      </div>
+      <svg viewBox="0 0 6 8" class="arrow-icon" xmlns="http://www.w3.org/2000/svg">
+        <path d="M1 1 L5 4 L1 7" />
+      </svg>
+    </a>
+  </div><!-- /buttons-container -->
 
-    // Функция возврата назад (на один уровень)
-    function goBack() {
-      if (currentState === 'instructions') {
-        // Если мы на инструкции – вернуться к выбору приложения
-        currentState = 'appSelection';
-        // Скрыть инструкции
-        document.getElementById('instructions').innerHTML = "";
-        // Показать выбор приложения (оставляем выбранное устройство)
-        document.getElementById('appSelection').style.display = 'flex';
-        // Обновляем заголовок и текст
-        document.getElementById('title').textContent = "Выберите вариант подключения";
-        document.getElementById('leadText').textContent = "Выберите приложение для вашего устройства (" + selectedDevice.toUpperCase() + ")";
-        // Скрываем кнопку "На главную", если она была видна
-        document.getElementById('backBtn').style.display = 'none';
-      } else if (currentState === 'appSelection') {
-        // Если мы на выборе приложения – вернуться к выбору устройства
-        currentState = 'deviceSelection';
-        // Скрыть выбор приложений
-        document.getElementById('appSelection').style.display = 'none';
-        // Очистить заголовок и текст инструкций
-        document.getElementById('title').textContent = "Инструкция по подключению VPN";
-        document.getElementById('leadText').textContent = "Выберите устройство, для которого нужна инструкция:";
-        // Показать выбор устройств
-        document.getElementById('deviceSelection').style.display = 'flex';
-        // Скрываем кнопку "Назад"
-        document.getElementById('backArrow').style.display = 'none';
-      }
-    }
-  </script>
+</div><!-- /#mainContent -->
+
+<script>
+  // Генерируем случайное время от 2 до 4 секунд (в мс: 2000..4000)
+  const randomTime = Math.floor(Math.random() * (4000 - 2000 + 1)) + 2000; 
+  // Ссылка на loader и основной контент
+  const loader = document.getElementById('loader');
+  const main = document.getElementById('mainContent');
+
+  // Через randomTime скрываем загрузчик (fade out) и показываем контент (fade in)
+  setTimeout(() => {
+    // Ставим opacity: 0 для loader (исчезновение)
+    loader.style.opacity = '0';
+
+    // Когда transition на loader отработает ~0.5s, убираем display
+    setTimeout(() => {
+      loader.style.display = 'none';
+
+      // Делаем fade-in для основного контента
+      main.style.opacity = '1';
+    }, 500);
+  }, randomTime);
+</script>
+
 </body>
 </html>
