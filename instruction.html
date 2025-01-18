@@ -2,6 +2,10 @@
 <html lang="ru">
 <head>
   <meta charset="UTF-8">
+
+  <!-- Чтобы страница корректно масштабировалась на мобильных -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
   <title>Выбор ОС</title>
 
   <!-- Подключаем локальный шрифт SF Pro Display Thin -->
@@ -13,41 +17,48 @@
       font-style: normal;
     }
 
+    /* Сброс и базовые стили */
     * {
       margin: 0;
       padding: 0;
       box-sizing: border-box;
     }
 
-    /* Чтобы все элементы и загрузчик были по центру */
-    body {
-      min-height: 100vh;               /* Чтобы занимало всю высоту экрана */
-      display: flex;
-      flex-direction: column;
-      justify-content: center;         /* По вертикали по центру */
-      align-items: center;            /* По горизонтали по центру */
+    /* Занимаем всю страницу */
+    html, body {
+      width: 100%;
+      height: 100%;
       background: #000; 
       color: #fff;
       font-family: 'SF Pro Display Thin', -apple-system, 
                    BlinkMacSystemFont, "Segoe UI", Roboto, 
                    "Helvetica Neue", Arial, sans-serif;
-      padding: 16px;
-      overflow: hidden; /* Чтобы не было скролла, пока loader на экране */
+      overflow: hidden; /* Чтобы не было скролла при показе загрузчика */
     }
 
-    /* Загрузочный экран (начально виден) */
+    /* Контейнер для всего контента,
+       центрируем и растягиваем на весь экран */
+    body {
+      display: flex;
+      flex-direction: column;
+      justify-content: center; /* по вертикали по центру */
+      align-items: center;     /* по горизонтали по центру */
+      padding: 16px;
+    }
+
+    /* Загрузочный экран */
     #loader {
-      position: absolute;   /* Абсолютное позиционирование поверх всего */
+      position: absolute;  /* покрывает весь экран */
       top: 0; 
       left: 0;
       width: 100%;
       height: 100%;
-      background: #000;     /* Чёрный фон */
+      background: #000;
       display: flex;
       justify-content: center;
       align-items: center;
-      z-index: 9999;        /* Поверх всего */
-      opacity: 1;           /* Начальная непрозрачность */
+      z-index: 9999;       
+      opacity: 1;          /* Начальная непрозрачность */
       transition: opacity 0.5s ease; /* Плавное исчезновение */
     }
     #loader img {
@@ -58,32 +69,36 @@
 
     /* Основной контент (по умолчанию скрыт через opacity: 0) */
     #mainContent {
+      width: 100%; 
       opacity: 0; 
       transition: opacity 0.5s ease; /* Плавное появление */
-      /* 
-         Так как body уже display:flex center, 
-         сам #mainContent будет тоже по центру.
-      */
+      display: flex;
+      flex-direction: column;
+      align-items: center; 
     }
 
-    /* Заголовок «Выберите операционную систему» */
+    /* Заголовок: чуть больше шрифт для мобильных */
     h1 {
-      font-size: 16px;
-      font-weight: 600;
+      font-size: 20px;       /* Увеличиваем размер */
+      font-weight: 600;      /* Толщина заголовка */
       margin-bottom: 16px;
-      color: #007aff; /* Синий цвет в «телеграмном» стиле */
-      text-align: center; /* Дополнительно по центру текст */
+      color: #007aff;        /* Синий цвет в «телеграмном» стиле */
+      text-align: center;
     }
 
-    /* Контейнер с кнопками */
+    /* Контейнер с кнопками: занимает всю ширину */
     .buttons-container {
+      width: 100%;
       display: flex;
       flex-direction: column;
       gap: 8px;
-      max-width: 300px;
+      /* Если хотите ограничить ширину на десктопах,
+         можно вернуть max-width, напр. 400-600px:
+         max-width: 400px; margin: 0 auto;
+      */
     }
 
-    /* Кнопки ОС */
+    /* Кнопки растягиваются на всю доступную ширину */
     .os-button {
       display: flex;
       align-items: center;
@@ -92,7 +107,8 @@
       border-radius: 8px;
       text-decoration: none;
       color: #fff;
-      padding: 9px 16px;
+      padding: 16px;     /* Увеличиваем высоту кнопок */
+      width: 100%;
     }
     .os-button:hover {
       background-color: #3a3a3c;
@@ -104,10 +120,10 @@
       gap: 16px;
     }
 
-    /* Квадратная подложка для иконок (со скруглёнными углами) */
+    /* Квадратная подложка для иконок */
     .os-icon-wrap {
-      width: 24px;
-      height: 24px;
+      width: 36px;   /* Делаем больше, чтобы на мобиле было удобнее */
+      height: 36px;
       background-color: #fff; 
       border-radius: 6px;
       display: flex;
@@ -116,20 +132,20 @@
       overflow: hidden;
     }
     .os-icon-wrap img {
-      width: 20px; 
-      height: 20px;
+      width: 24px;   /* Иконка пропорционально больше */
+      height: 24px;
       display: block;
     }
 
-    /* Стрелочка ">" (незаполненная, тонкая) */
+    /* Тонкая стрелочка ">" */
     .arrow-icon {
-      width: 10px;
-      height: 14px;
+      width: 14px;
+      height: 18px;
     }
     .arrow-icon path {
       fill: none;
       stroke: #888;
-      stroke-width: 1;
+      stroke-width: 1.5; /* Можно чуть увеличить для наглядности */
       stroke-linecap: round;
       stroke-linejoin: round;
     }
@@ -148,6 +164,7 @@
   <h1>Выберите операционную систему</h1>
 
   <div class="buttons-container">
+
     <!-- iOS -->
     <a href="#" class="os-button">
       <div class="os-left">
@@ -222,6 +239,7 @@
         <path d="M1 1 L5 4 L1 7" />
       </svg>
     </a>
+    
   </div><!-- /buttons-container -->
 
 </div><!-- /#mainContent -->
@@ -238,10 +256,9 @@
     // Ставим opacity: 0 для loader (исчезновение)
     loader.style.opacity = '0';
 
-    // Когда transition на loader отработает ~0.5s, убираем display
+    // Когда transition на loader (0.5s) завершится, убираем loader
     setTimeout(() => {
       loader.style.display = 'none';
-
       // Делаем fade-in для основного контента
       main.style.opacity = '1';
     }, 500);
