@@ -2,13 +2,8 @@
 <html lang="ru">
 <head>
   <meta charset="UTF-8">
-
-  <!-- Чтобы страница корректно масштабировалась на мобильных -->
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
   <title>Выбор ОС</title>
-
-  <!-- Подключаем локальный шрифт SF Pro Display Thin -->
   <style>
     @font-face {
       font-family: 'SF Pro Display Thin';
@@ -17,86 +12,63 @@
       font-style: normal;
     }
 
-    /* Сброс и базовые стили */
+    /* Сброс */
     * {
       margin: 0;
       padding: 0;
       box-sizing: border-box;
     }
-
-    /* 
-      Ширина/высота на 100%, чёрный фон, 
-      без прокрутки при отображении загрузчика.
-    */
     html, body {
       width: 100%;
       height: 100%;
       background: #000; 
       color: #fff;
-      font-family: 'SF Pro Display Thin', -apple-system, 
-                   BlinkMacSystemFont, "Segoe UI", Roboto, 
-                   "Helvetica Neue", Arial, sans-serif;
+      font-family: 'SF Pro Display Thin', -apple-system, BlinkMacSystemFont, 
+                   "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
       overflow: hidden;
     }
-
-    /* 
-      Тело страницы: вертикально по центру (justify-content: center),
-      но выравниваем контент слева (align-items: flex-start).
-    */
     body {
       display: flex;
       flex-direction: column;
-      justify-content: center; /* центрируем по вертикали */
-      align-items: flex-start; /* выравниваем по левому краю по горизонтали */
+      justify-content: center;
+      align-items: flex-start;
       padding: 16px;
     }
 
     /* Загрузочный экран */
     #loader {
-      position: absolute;  /* покрывает весь экран */
-      top: 0; 
-      left: 0;
-      width: 100%;
-      height: 100%;
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
       background: #000;
       display: flex;
       justify-content: center;
       align-items: center;
-      z-index: 9999;       
-      opacity: 1;          /* Начальная непрозрачность */
-      transition: opacity 0.5s ease; /* Плавное исчезновение */
+      z-index: 9999;
+      opacity: 1;
+      transition: opacity 0.5s ease;
     }
     #loader img {
-      max-width: 200px; 
-      width: auto;
-      height: auto;
+      max-width: 200px;
     }
 
-    /* Основной контент (по умолчанию скрыт через opacity: 0) */
+    /* Основной контент (по умолчанию скрыт) */
     #mainContent {
-      width: 100%; 
-      opacity: 0; 
-      transition: opacity 0.5s ease; /* Плавное появление */
-
-      /* 
-         Убираем align-items: center, 
-         чтобы заголовок и кнопки были слева.
-      */
+      width: 100%;
+      opacity: 0;
+      transition: opacity 0.5s ease;
       display: flex;
       flex-direction: column;
       align-items: flex-start;
     }
 
-    /* Заголовок выравниваем слева */
     h1 {
-      font-size: 20px;     
-      font-weight: 600;    
+      font-size: 20px;
+      font-weight: 600;
       margin-bottom: 16px;
-      color: #007aff;      /* Синий цвет в «телеграмном» стиле */
-      text-align: left;    /* Текст слева */
+      color: #007aff;
     }
 
-    /* Контейнер с кнопками: занимает всю ширину */
     .buttons-container {
       width: 100%;
       display: flex;
@@ -104,16 +76,16 @@
       gap: 8px;
     }
 
-    /* Кнопки растягиваются на всю доступную ширину */
+    /* Стиль кнопок */
     .os-button {
       display: flex;
       align-items: center;
-      justify-content: space-between; /* текст слева, стрелка справа */
+      justify-content: space-between;
       background-color: #2c2c2e;
       border-radius: 8px;
       text-decoration: none;
       color: #fff;
-      padding: 6px;   
+      padding: 6px;
       width: 100%;
     }
     .os-button:hover {
@@ -126,33 +98,68 @@
       gap: 16px;
     }
 
-    /* Квадратная подложка для иконок */
+    /* Базовый стиль подложки */
     .os-icon-wrap {
-      width: 36px;   
+      width: 36px;
       height: 36px;
-      background-color: #fff; 
       border-radius: 6px;
       display: flex;
       align-items: center;
       justify-content: center;
       overflow: hidden;
     }
+    /* Фон для каждого */
+    .ios-bg { background-color: #ffffff; }
+    .android-bg { background-color: #fb1c1c; }
+    .macos-bg { background-color: black; }
+    .windows-bg { background-color: white; }
+    .linux-bg { background-color: #f7b824; }
+
+    /* Общий стиль для иконок - убираем max-width/height */
     .os-icon-wrap img {
-      width: 24px; 
-      height: 24px;
       display: block;
     }
 
-    /* Тонкая стрелочка ">" + небольшой отступ справа */
+    /* Например, iOS пусть будет точно 24×24 */
+    .ios-bg img {
+      width: 26px;
+      height: 26px;
+    }
+
+    /* Android 20×20 */
+    .android-bg img {
+      width: 25px;
+      height: 25px;
+    }
+
+    /* MacOS - УВЕЛИЧИВАЕМ иконку, например до 64px по ширине */
+    .macos-bg img {
+      width: 30px; /* принудительно больше, чем исходный размер */
+      height: auto; 
+    }
+
+    /* Windows 26×26 */
+    .windows-bg img {
+      width: 26px;
+      height: 26px;
+    }
+
+    /* Linux 24×24 */
+    .linux-bg img {
+      width: 28px;
+      height: 28px;
+    }
+
+    /* Стрелочка */
     .arrow-icon {
       width: 11px;
       height: 13px;
-      margin-right: 12px; /* Подвигаем чуть левее от правого края */
+      margin-right: 12px;
     }
     .arrow-icon path {
       fill: none;
       stroke: #888;
-      stroke-width: 1.2; 
+      stroke-width: 1.2;
       stroke-linecap: round;
       stroke-linejoin: round;
     }
@@ -175,10 +182,8 @@
     <!-- iOS -->
     <a href="#" class="os-button">
       <div class="os-left">
-        <div class="os-icon-wrap">
-          <img 
-            src="https://www.svgrepo.com/show/473543/apple.svg" 
-            alt="iOS">
+        <div class="os-icon-wrap ios-bg">
+          <img src="https://www.svgrepo.com/show/473543/apple.svg" alt="iOS">
         </div>
         <span>iOS</span>
       </div>
@@ -190,10 +195,8 @@
     <!-- Android -->
     <a href="#" class="os-button">
       <div class="os-left">
-        <div class="os-icon-wrap">
-          <img 
-            src="https://www.svgrepo.com/show/475631/android-color.svg"
-            alt="Android">
+        <div class="os-icon-wrap android-bg">
+          <img src="https://www.svgrepo.com/show/475631/android-color.svg" alt="Android">
         </div>
         <span>Android</span>
       </div>
@@ -205,10 +208,9 @@
     <!-- MacOS -->
     <a href="#" class="os-button">
       <div class="os-left">
-        <div class="os-icon-wrap">
-          <img 
-            src="https://img.icons8.com/color/48/mac-logo.png"
-            alt="macOS">
+        <div class="os-icon-wrap macos-bg">
+          <!-- Эта иконка будет принудительно растянута до 64 пикселей ширины -->
+          <img src="https://img.icons8.com/color/48/mac-logo.png" alt="macOS">
         </div>
         <span>MacOS</span>
       </div>
@@ -220,10 +222,8 @@
     <!-- Windows -->
     <a href="#" class="os-button">
       <div class="os-left">
-        <div class="os-icon-wrap">
-          <img 
-            src="https://www.svgrepo.com/show/382713/windows-applications.svg"
-            alt="Windows">
+        <div class="os-icon-wrap windows-bg">
+          <img src="https://www.svgrepo.com/show/382713/windows-applications.svg" alt="Windows">
         </div>
         <span>Windows</span>
       </div>
@@ -235,10 +235,8 @@
     <!-- Linux -->
     <a href="#" class="os-button">
       <div class="os-left">
-        <div class="os-icon-wrap">
-          <img 
-            src="https://upload.wikimedia.org/wikipedia/commons/3/35/Tux.svg"
-            alt="Linux">
+        <div class="os-icon-wrap linux-bg">
+          <img src="https://upload.wikimedia.org/wikipedia/commons/3/35/Tux.svg" alt="Linux">
         </div>
         <span>Linux</span>
       </div>
@@ -252,19 +250,16 @@
 </div><!-- /#mainContent -->
 
 <script>
-  // Генерируем случайное время от 2 до 4 секунд (в мс: 2000..4000)
-  const randomTime = Math.floor(Math.random() * (4000 - 2000 + 1)) + 2000; 
-  // Ссылка на loader и основной контент
+  // Генерируем случайное время от 2 до 4 секунд
+  const randomTime = Math.floor(Math.random() * (4000 - 2000 + 1)) + 2000;
   const loader = document.getElementById('loader');
   const main = document.getElementById('mainContent');
 
-  // По истечении randomTime скрываем загрузчик (fade out) и показываем контент (fade in)
   setTimeout(() => {
-    loader.style.opacity = '0'; // Плавное исчезновение
-
+    loader.style.opacity = '0';
     setTimeout(() => {
-      loader.style.display = 'none';   // Полностью убираем
-      main.style.opacity = '1';        // Плавное появление контента
+      loader.style.display = 'none';
+      main.style.opacity = '1';
     }, 500);
   }, randomTime);
 </script>
