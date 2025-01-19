@@ -1,9 +1,13 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1.0" />
   <title>Выбор ОС</title>
+  
+  <!-- Подключение Telegram WebApp JS API -->
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+
   <style>
     @font-face {
       font-family: 'SF-Pro-Display-Regular';
@@ -30,7 +34,6 @@
       font-style: normal;
     }
 
-    /* Сброс */
     * {
       margin: 0;
       padding: 0;
@@ -50,10 +53,8 @@
     /* Загрузочный экран */
     #loader {
       position: absolute;
-      top: 0; 
-      left: 0;
-      width: 100%;
-      height: 100%;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
       background: #000;
       display: flex;
       justify-content: center;
@@ -75,28 +76,24 @@
       height: 100%;
     }
 
-    /* Общий класс для экранов */
     .screen {
       position: absolute;
-      top: 0; 
-      left: 0;
-      width: 100%;
-      height: 100%;
-      display: none; /* Изначально экран скрыт */
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      display: none;
       box-sizing: border-box;
     }
     .screen.active {
-      display: flex; /* При "активности" показываем (флекс) */
+      display: flex;
     }
 
-    /* Для экранов 1 и 2: вертикальное центрирование */
+    /* Экран 1 и 2 – вертикальное выравнивание */
     #mainScreen,
     #appsScreen {
-      justify-content: center; /* центр по вертикали */
-      align-items: center;     /* центр по горизонтали */
+      justify-content: center;
+      align-items: center;
     }
 
-    /* Внутренний блок без ограничений по ширине и без боковых отступов */
     .inner-container {
       width: 100%;
       margin: 0;
@@ -108,8 +105,8 @@
       font-size: 20px;
       font-weight: 50;
       color: #007aff;
-      margin-bottom: 16px; /* Отступ между заголовком и кнопками */
-      padding: 0 12px;     /* Небольшие боковые отступы, если хотите */
+      margin-bottom: 16px;
+      padding: 0 12px;
     }
 
     .buttons-container {
@@ -119,7 +116,6 @@
       gap: 8px;
     }
 
-    /* Стиль кнопок (ОС/приложения): заполняют всю ширину */
     .os-button {
       font-size: 19px;
       font-family: 'SF-Pro-Display-Regular';
@@ -133,7 +129,7 @@
       padding: 12px;
       margin-left: 10px;
       height: 47px;
-      width: 97%; /* ВАЖНО: на всю ширину родителя */
+      width: 97%;
     }
     .os-button:hover {
       background-color: #3a3a3c;
@@ -145,7 +141,6 @@
       gap: 16px;
     }
 
-    /* Подложка для иконки ОС */
     .os-icon-wrap {
       width: 30px;
       height: 30px;
@@ -166,7 +161,6 @@
     .linux-bg { background-color: #f7b824; }
     .linux-bg img { width: 23px; height: 23px; }
 
-    /* Маленькая стрелка справа */
     .arrow-icon {
       width: 11px;
       height: 13px;
@@ -180,36 +174,7 @@
       stroke-linejoin: round;
     }
 
-    /* Кнопка «Назад» */
-    .back-button {
-      position: absolute;
-      top: 16px;
-      left: 16px;
-      z-index: 10;
-      display: flex;
-      align-items: center;
-      color: #007aff;
-      text-decoration: none;
-      font-size: 16px;
-      font-weight: 500;
-    }
-    .back-button:hover {
-      opacity: 0.8;
-    }
-    .back-button svg {
-      width: 16px;
-      height: 16px;
-      margin-right: 6px;
-    }
-    .back-button path {
-      fill: none;
-      stroke: #007aff;
-      stroke-width: 1.5;
-      stroke-linecap: round;
-      stroke-linejoin: round;
-    }
-
-    /* Экран Hiddify (инструкция) */
+    /* Все экраны с инструкциями */
     .centered-content {
       display: flex;
       flex-direction: column;
@@ -240,14 +205,7 @@
       font-weight: bold;
       flex-shrink: 0;
     }
-    .instruction-line span {
-      color: #fff; /* Основной цвет текста */
-    }
-    .instruction-line span.gray-text {
-      color: #888; /* Серый цвет для перенесенного текста */
-    }
 
-    /* Контейнер для кнопки "Скачать" */
     .download-button-container {
       position: absolute;
       bottom: 20px;
@@ -255,8 +213,6 @@
       display: flex;
       justify-content: center;
     }
-
-    /* Кнопка «Скачать» */
     .download-button {
       font-family: 'SF-Pro-Display-Medium';
       display: block;
@@ -266,8 +222,8 @@
       font-size: 18px;
       padding: 16px 28px;
       border-radius: 18px;
-      width: 80%;   
-      height: 10%;  
+      width: 80%;
+      height: 10%;
       max-height: 70px;
       max-width: 500px;
       text-align: center;
@@ -275,11 +231,32 @@
     .download-button:hover {
       opacity: 0.8;
     }
+
+    code {
+      background: #2c2c2e;
+      padding: 4px 6px;
+      border-radius: 4px;
+      color: #fff;
+      font-family: Consolas, monospace;
+      font-size: 0.9rem;
+      display: inline-block;
+      cursor: pointer;
+    }
+
+    /* Иконки приложений */
+    .os-icon-wrap img.hiddify-icon { width: 25px; height: 25px; }
+    .os-icon-wrap img.foxray-icon  { width: 20px; height: 20px; }
+    .os-icon-wrap img.nekobox-icon { width: 28px; height: 28px; }
+    .os-icon-wrap img.nekoray-icon { width: 25px; height: auto; }
+
+    /* Цветные фоны для апп-иконок */
+    .hiddify-bg { background: #F0F0F0; }
+    .foxray-bg  { background-color: #007aff; }
+    .nekobox-bg { background-color: #fff; }
+    .nekoray-bg { background-color: #D3D3D3; }
   </style>
 </head>
 <body>
-
-<!-- Загрузочный экран -->
 <div id="loader">
   <img src="Cloud With Lightning.webp" alt="Loading...">
 </div>
@@ -350,35 +327,20 @@
             <path d="M1 1 L5 4 L1 7" />
           </svg>
         </a>
-      </div><!-- /.buttons-container -->
-    </div><!-- /.inner-container -->
-  </div><!-- /#mainScreen -->
+      </div>
+    </div>
+  </div>
 
   <!-- Экран 2: Выбор приложения -->
   <div id="appsScreen" class="screen">
-    <a href="#" class="back-button" id="backBtnApps">
-      <svg viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
-        <path d="M10 12L6 8l4-4"/>
-      </svg>
-      <span>Назад</span>
-    </a>
-
     <div class="inner-container">
-      <h1>Выбрать приложение</h1>
+      <h1>Выберите приложение</h1>
       <div class="buttons-container" id="appsList"></div>
     </div>
-  </div><!-- /#appsScreen -->
+  </div>
 
   <!-- Экран 3: Инструкция для Hiddify -->
   <div id="hiddifyScreen" class="screen">
-    <!-- Кнопка «Назад» в левом верхнем углу -->
-    <a href="#" class="back-button" id="backBtnHiddify">
-      <svg viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
-        <path d="M10 12L6 8l4-4"/>
-      </svg>
-      <span>Назад</span>
-    </a>
-
     <div class="centered-content">
       <div class="instruction-line" data-number="1">
         <span>Скачайте приложение Hiddify;</span>
@@ -387,39 +349,225 @@
         <span>Нажмите кнопку «⚡ Подключиться» в главном меню бота.</span>
       </div>
     </div>
-
     <div class="download-button-container">
-      <a href="https://hiddify.com/" target="_blank" class="download-button">
+      <a href="https://hiddify.com/" target="_blank" class="download-button">Скачать</a>
+    </div>
+  </div>
+
+  <!-- Экран FoXray (iOS/Mac) -->
+  <div id="foXrayScreen" class="screen">
+    <div class="centered-content">
+      <div class="instruction-line" data-number="1">
+        <span>Получите и скопируйте ключ в боте;</span>
+      </div>
+      <div class="instruction-line" data-number="2">
+        <span>Скачайте и откройте приложение FoXray;</span>
+      </div>
+      <div class="instruction-line" data-number="3">
+        <span>Нажмите иконку «Вставить» в правом верхнем углу;</span>
+      </div>
+      <div class="instruction-line" data-number="4">
+        <span>В отобразившемся окне нажмите «Разрешить вставку»;</span>
+      </div>
+      <div class="instruction-line" data-number="5">
+        <span>Разрешите FoXray добавить конфигурацию VPN;</span>
+      </div>
+      <div class="instruction-line" data-number="6">
+        <span>Нажмите на кнопку запуска напротив добавленного VPN.</span>
+      </div>
+    </div>
+    <div class="download-button-container">
+      <a href="https://apps.apple.com/ru/app/foxray/id6448898396" target="_blank" class="download-button">
         Скачать
       </a>
     </div>
-  </div><!-- /#hiddifyScreen -->
-</div><!-- /#appWrapper -->
+  </div>
+
+  <!-- Экран NekoBox (Android) -->
+  <div id="nekoBoxScreen" class="screen">
+    <div class="centered-content">
+      <div class="instruction-line" data-number="1">
+        <span>Получите и скопируйте ключ в боте;</span>
+      </div>
+      <div class="instruction-line" data-number="2">
+        <span>Скачайте приложение NekoBox;</span>
+      </div>
+      <div class="instruction-line" data-number="3">
+        <span>Откройте папку загрузок или нажмите «Скачанные файлы» в браузере;</span>
+      </div>
+      <div class="instruction-line" data-number="4">
+        <span>Нажмите на скачанный файл и нажмите «Установить»;</span>
+      </div>
+      <div class="instruction-line" data-number="5">
+        <span>Откройте установленное приложение и выдайте разрешение;</span>
+      </div>
+      <div class="instruction-line" data-number="6">
+        <span>Нажмите на иконку «Вставить» → «Импорт из буфера обмена»;</span>
+      </div>
+      <div class="instruction-line" data-number="7">
+        <span>Выберете конфигурацию и нажмите на иконку запуска;</span>
+      </div>
+      <div class="instruction-line" data-number="8">
+        <span>Выдайте разрешение, если требуется.</span>
+      </div>
+    </div>
+    <div class="download-button-container">
+      <a href="https://github.com/MatsuriDayo/NekoBoxForAndroid/releases/download/1.2.9/NB4A-1.2.9-arm64-v8a.apk"
+         target="_blank" class="download-button">
+        Скачать
+      </a>
+    </div>
+  </div>
+
+  <!-- Экран Nekoray (Windows) -->
+  <div id="nekorayScreen" class="screen">
+    <div class="centered-content">
+      <div class="instruction-line" data-number="1">
+        <span>Получите и скопируйте ключ в боте;</span>
+      </div>
+      <div class="instruction-line" data-number="2">
+        <span>Скачайте .zip архив с приложением;</span>
+      </div>
+      <div class="instruction-line" data-number="3">
+        <span>Распакуйте архив в удобное место (C или D);</span>
+      </div>
+      <div class="instruction-line" data-number="4">
+        <span>Откройте папку Nekoray и запустите <b>nekoray.exe</b>;</span>
+      </div>
+      <div class="instruction-line" data-number="5">
+        <span>Если появится всплывающее окно — выберите xray;</span>
+      </div>
+      <div class="instruction-line" data-number="6">
+        <span>Если окно не открылось, проверьте системный трей;</span>
+      </div>
+      <div class="instruction-line" data-number="7">
+        <span>Нажмите «Программа» → «Добавить профиль из буфера обмена»;</span>
+      </div>
+      <div class="instruction-line" data-number="8">
+        <span>Отметьте «Режим системного прокси» и «Режим TUN»;</span>
+      </div>
+      <div class="instruction-line" data-number="9">
+        <span>Кликните по VPN правой кнопкой → «Запустить»/«Остановить» или используйте иконку в трее.</span>
+      </div>
+    </div>
+    <div class="download-button-container">
+      <a href="https://github.com/MatsuriDayo/nekoray/releases/download/3.26/nekoray-3.26-2023-12-09-windows64.zip"
+         target="_blank" class="download-button">
+        Скачать
+      </a>
+    </div>
+  </div>
+
+  <!-- Экран Nekoray (Linux) -->
+  <div id="nekorayLinuxScreen" class="screen">
+    <div class="centered-content">
+      <div class="instruction-line" data-number="1">
+        <span>Получите и скопируйте ключ в боте;</span>
+      </div>
+      <div class="instruction-line" data-number="2">
+        <span>Скачайте .deb файл приложения;</span>
+      </div>
+      <div class="instruction-line" data-number="3">
+        <span>В терминале:</span><br>
+        <code id="copyCmd">
+          sudo apt install ./nekoray-*-debian-x64.deb
+        </code>
+      </div>
+      <div class="instruction-line" data-number="4">
+        <span>Запустите Nekoray;</span>
+      </div>
+      <div class="instruction-line" data-number="5">
+        <span>Если нет окна — проверьте системный трей;</span>
+      </div>
+      <div class="instruction-line" data-number="6">
+        <span>«Program» → «Add profile from clipboard»;</span>
+      </div>
+      <div class="instruction-line" data-number="7">
+        <span>Отметьте «System Proxy» и «TUN Mode»;</span>
+      </div>
+      <div class="instruction-line" data-number="8">
+        <span>Далее пользуйтесь через системный трей.</span>
+      </div>
+    </div>
+    <div class="download-button-container">
+      <a href="https://github.com/MatsuriDayo/nekoray/releases/download/3.26/nekoray-3.26-2023-12-09-debian-x64.deb"
+         target="_blank" class="download-button">
+        Скачать
+      </a>
+    </div>
+  </div>
+</div>
 
 <script>
-  // Логика загрузчика и переключения экранов
-  const randomTime = Math.floor(Math.random() * (4000 - 2000 + 1)) + 2000;
+  // Telegram WebApp API: оповещаем, что всё загрузилось
+  Telegram.WebApp.ready();
+
+  // Можно установить цвет заголовка (по желанию)
+  Telegram.WebApp.setHeaderColor('theme'); // или 'bg_color' / любой hex
+
+  // Скрыть основную кнопку Telegram (если вдруг у вас нет нужды в ней)
+  Telegram.WebApp.MainButton.hide();
+  
+  // По умолчанию скрываем кнопку «Назад» (будем показывать её вручную)
+  Telegram.WebApp.BackButton.hide();
+
+  // Логика "смены экранов" с историей для Telegram-кнопки "Назад"
+  const historyStack = [];
+  let currentScreen = null;
+
+  function showScreen(screen) {
+    // Если уже есть экран, прячем и добавляем в "историю"
+    if (currentScreen && currentScreen !== screen) {
+      currentScreen.classList.remove('active');
+      historyStack.push(currentScreen);
+    }
+    // Показываем новый
+    currentScreen = screen;
+    currentScreen.classList.add('active');
+
+    // Если есть «предыдущий» экран в стеке, показываем телеграм-кнопку
+    if (historyStack.length > 0) {
+      Telegram.WebApp.BackButton.show();
+    } else {
+      // Если мы на главном экране (стек пуст), скрываем телеграм-кнопку
+      Telegram.WebApp.BackButton.hide();
+    }
+  }
+
+  // Отслеживаем клик по «телеграмовской» кнопке "Назад"
+  Telegram.WebApp.onEvent('backButtonClicked', () => {
+    if (historyStack.length > 0) {
+      // Прячем текущий
+      currentScreen.classList.remove('active');
+      // Достаём предыдущий из historyStack
+      const prevScreen = historyStack.pop();
+      // Показываем предыдущий
+      currentScreen = prevScreen;
+      currentScreen.classList.add('active');
+
+      // Если после возврата стэк ещё не пуст, показываем кнопку
+      if (historyStack.length > 0) {
+        Telegram.WebApp.BackButton.show();
+      } else {
+        Telegram.WebApp.BackButton.hide();
+      }
+    }
+  });
+
+  // ----- ЛОГИКА ЗАГРУЗЧИКА -----
   const loader = document.getElementById('loader');
+  // 2-4 сек для рандомной задержки
+  const randomTime = Math.floor(Math.random() * (4000 - 2000 + 1)) + 2000;
   setTimeout(() => {
     loader.style.opacity = '0';
     setTimeout(() => {
       loader.style.display = 'none';
-      mainScreen.classList.add('active');
+      // Показать стартовый экран
+      showScreen(document.getElementById('mainScreen'));
     }, 400);
   }, randomTime);
 
-  const mainScreen = document.getElementById('mainScreen');
-  const appsScreen = document.getElementById('appsScreen');
-  const hiddifyScreen = document.getElementById('hiddifyScreen');
-
-  function showScreen(screen) {
-    screen.classList.add('active');
-  }
-  function hideScreen(screen) {
-    screen.classList.remove('active');
-  }
-
-  const appsList = document.getElementById('appsList');
+  // ----- КОНФИГ ПРИЛОЖЕНИЙ ДЛЯ КАЖДОЙ ОС -----
   const appsForOS = {
     iOS:     ["Hiddify", "FoXray"],
     Android: ["Hiddify", "NekoBox"],
@@ -427,21 +575,35 @@
     Windows: ["Hiddify", "Nekoray"],
     Linux:   ["Hiddify", "Nekoray"]
   };
+
   const appsIcons = {
-    "Hiddify": "https://www.svgrepo.com/show/475631/android-color.svg",
-    "FoXray":  "https://www.svgrepo.com/show/473543/apple.svg",
-    "NekoBox": "https://upload.wikimedia.org/wikipedia/commons/3/35/Tux.svg",
-    "Nekoray": "https://www.svgrepo.com/show/382713/windows-applications.svg"
+    "Hiddify": "https://www.85la.com/wp-content/uploads/replace/288cae51aa43a8ee1076d7fd49eb87bc.png",
+    "FoXray":  "https://play-lh.googleusercontent.com/BPhvna2GxvfbpPKRjlzG-CD3Va8ti2bZ1er7eSVcieBG-jOW-H_cn5PYpX5K0u-UlWU",
+    "NekoBox": "https://cs9f3b.4pda.ws/28766140.png",
+    "Nekoray": "https://nekoray.com/wp-content/uploads/2024/04/nekoray.png"
   };
 
-  const osButtons = document.querySelectorAll('.os-button[data-os]');
-  osButtons.forEach(btn => {
+  // Элементы экранов
+  const mainScreen      = document.getElementById('mainScreen');
+  const appsScreen      = document.getElementById('appsScreen');
+  const hiddifyScreen   = document.getElementById('hiddifyScreen');
+  const foXrayScreen    = document.getElementById('foXrayScreen');
+  const nekoBoxScreen   = document.getElementById('nekoBoxScreen');
+  const nekorayScreen   = document.getElementById('nekorayScreen');
+  const nekorayLinuxScr = document.getElementById('nekorayLinuxScreen');
+
+  const appsList = document.getElementById('appsList');
+  let currentOS = null;
+
+  // Обработчики на кнопки выбора ОС (экран 1)
+  document.querySelectorAll('.os-button[data-os]').forEach(btn => {
     btn.addEventListener('click', (ev) => {
       ev.preventDefault();
-      const osName = btn.getAttribute('data-os');
+      currentOS = btn.getAttribute('data-os');
       appsList.innerHTML = '';
 
-      appsForOS[osName].forEach(appName => {
+      // Генерируем список приложений для выбранной ОС
+      appsForOS[currentOS].forEach(appName => {
         const a = document.createElement('a');
         a.className = 'os-button';
         a.href = '#';
@@ -451,10 +613,26 @@
 
         const iconWrap = document.createElement('div');
         iconWrap.className = 'os-icon-wrap';
-        iconWrap.style.background = '#555'; // Примерный серый фон
+
+        if (appName === "Hiddify") {
+          iconWrap.classList.add('hiddify-bg');
+        } else if (appName === "FoXray") {
+          iconWrap.classList.add('foxray-bg');
+        } else if (appName === "NekoBox") {
+          iconWrap.classList.add('nekobox-bg');
+        } else if (appName === "Nekoray") {
+          iconWrap.classList.add('nekoray-bg');
+        }
 
         const img = document.createElement('img');
         img.src = appsIcons[appName] || "https://via.placeholder.com/24";
+        img.alt = appName;
+
+        if (appName === "Hiddify")  img.classList.add('hiddify-icon');
+        if (appName === "FoXray")   img.classList.add('foxray-icon');
+        if (appName === "NekoBox")  img.classList.add('nekobox-icon');
+        if (appName === "Nekoray")  img.classList.add('nekoray-icon');
+
         iconWrap.appendChild(img);
 
         const spanApp = document.createElement('span');
@@ -466,7 +644,7 @@
         const svgArrow = document.createElementNS("http://www.w3.org/2000/svg", "svg");
         svgArrow.setAttribute("viewBox","0 0 6 8");
         svgArrow.classList.add('arrow-icon');
-        const pathArrow = document.createElementNS("http://www.w3.org/2000/svg","path");
+        const pathArrow = document.createElementNS("http://www.w3.org/2000/svg", "path");
         pathArrow.setAttribute("d","M1 1 L5 4 L1 7");
         pathArrow.style.fill = 'none';
         pathArrow.style.stroke = '#888';
@@ -478,11 +656,21 @@
         a.appendChild(leftDiv);
         a.appendChild(svgArrow);
 
+        // Обработчик клика по конкретному приложению
         a.addEventListener('click', (appEv) => {
           appEv.preventDefault();
           if (appName === "Hiddify") {
-            hideScreen(appsScreen);
             showScreen(hiddifyScreen);
+          } else if (appName === "FoXray") {
+            showScreen(foXrayScreen);
+          } else if (appName === "NekoBox") {
+            showScreen(nekoBoxScreen);
+          } else if (appName === "Nekoray") {
+            if (currentOS === "Windows") {
+              showScreen(nekorayScreen);
+            } else if (currentOS === "Linux") {
+              showScreen(nekorayLinuxScr);
+            }
           } else {
             alert("Нажато приложение: " + appName);
           }
@@ -491,85 +679,26 @@
         appsList.appendChild(a);
       });
 
-      // Переходим со "старого" экрана на "новый"
-      hideScreen(mainScreen);
+      // Переход на экран 2
       showScreen(appsScreen);
     });
   });
 
-  // Назад с экрана выбора приложений
-  const backBtnApps = document.getElementById('backBtnApps');
-  backBtnApps.addEventListener('click', (ev) => {
-    ev.preventDefault();
-    hideScreen(appsScreen);
-    showScreen(mainScreen);
-  });
-
-  // Назад с экрана инструкции
-  const backBtnHiddify = document.getElementById('backBtnHiddify');
-  backBtnHiddify.addEventListener('click', (ev) => {
-    ev.preventDefault();
-    hideScreen(hiddifyScreen);
-    showScreen(appsScreen);
-  });
-
-  // Пример функции для добавления серого цвета к перенесенному тексту
-  function handleTextOverflow() {
-    const instructionLines = document.querySelectorAll('.instruction-line');
-    
-    instructionLines.forEach(line => {
-      const mainSpan = line.querySelector('span');
-      const originalText = mainSpan.textContent.trim();
-      
-      // Контейнер, в котором измеряем ширину (сам .instruction-line)
-      const containerWidth = line.clientWidth;
-
-      // Временный элемент для замера
-      const tempSpan = document.createElement('span');
-      tempSpan.style.visibility = 'hidden';
-      tempSpan.style.whiteSpace = 'nowrap';
-      document.body.appendChild(tempSpan);
-
-      const words = originalText.split(' ');
-      let firstLineWords = [];
-      let breakIndex = -1; // индекс, на котором нужно «переносить» текст
-
-      for (let i = 0; i < words.length; i++) {
-        // Пробуем добавить текущее слово в нашу «первую строку»
-        firstLineWords.push(words[i]);
-        tempSpan.textContent = firstLineWords.join(' ');
-
-        // Если не влезает
-        if (tempSpan.offsetWidth > containerWidth) {
-          // Если это первое же слово — выходим вообще без переноса
-          if (i === 0) {
-            breakIndex = -1; 
-          } else {
-            // «Перенос» будет перед последним добавленным словом
-            breakIndex = i;
-          }
-          break;
-        }
-      }
-
-      // Удаляем временный элемент
-      document.body.removeChild(tempSpan);
-
-      // Если breakIndex так и остался -1, значит всё влезло (или не влезло даже первое слово)
-      if (breakIndex === -1) {
-        mainSpan.textContent = originalText; // всё белое, без переноса
-      } else {
-        // firstLine — белая часть (до breakIndex)
-        // secondLine — серая часть (оставшиеся слова)
-        const firstLine = words.slice(0, breakIndex).join(' ');
-        const secondLine = words.slice(breakIndex).join(' ');
-        mainSpan.innerHTML = `${firstLine} <span class="gray-text">${secondLine}</span>`;
-      }
+  // Копирование команды в Linux-экране
+  const copyCmd = document.getElementById('copyCmd');
+  if (copyCmd) {
+    copyCmd.addEventListener('click', () => {
+      const textToCopy = copyCmd.textContent.trim();
+      navigator.clipboard.writeText(textToCopy).then(() => {
+        alert("Команда скопирована!");
+      }, err => {
+        console.error("Ошибка копирования:", err);
+      });
     });
   }
 
-  // Вызываем функцию после полной загрузки страницы
-  window.addEventListener('load', handleTextOverflow);
+  // Если нужно автоматически переносить текст с «серым остатком» — 
+  // можно вызывать вашу handleTextOverflow() при load (убрано здесь для краткости).
 </script>
 </body>
 </html>
