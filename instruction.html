@@ -2,13 +2,31 @@
 <html lang="ru">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0">
   <title>Выбор ОС</title>
   <style>
     @font-face {
-      font-family: 'SF Pro Display Thin';
+      font-family: 'SF-Pro-Display-Regular';
+      src: url('SF-Pro-Display-Regular.otf') format('opentype');
+      font-weight: 100;
+      font-style: normal;
+    }
+    @font-face {
+      font-family: 'SF-Pro-Display-Bold';
+      src: url('SF-Pro-Display-Bold.otf') format('opentype');
+      font-weight: 100;
+      font-style: normal;
+    }
+    @font-face {
+      font-family: 'SF-Pro-Display-Thin';
       src: url('SF-Pro-Display-Thin.otf') format('opentype');
-      font-weight: 300; 
+      font-weight: 100;
+      font-style: normal;
+    }
+    @font-face {
+      font-family: 'SF-Pro-Display-Medium';
+      src: url('SF-Pro-Display-Medium.otf') format('opentype');
+      font-weight: 100;
       font-style: normal;
     }
 
@@ -21,52 +39,77 @@
     html, body {
       width: 100%;
       height: 100%;
-      background: #000; 
+      background: #000;
       color: #fff;
-      font-family: 'SF Pro Display Thin', -apple-system, BlinkMacSystemFont, 
-                   "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      font-family: 'SF-Pro-Display-Regular', -apple-system,
+                   BlinkMacSystemFont, "Segoe UI", Roboto,
+                   "Helvetica Neue", Arial, sans-serif;
       overflow: hidden;
-    }
-    body {
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: flex-start;
-      padding: 16px;
     }
 
     /* Загрузочный экран */
     #loader {
       position: absolute;
-      top: 0; left: 0;
-      width: 100%; height: 100%;
+      top: 0; 
+      left: 0;
+      width: 100%;
+      height: 100%;
       background: #000;
       display: flex;
       justify-content: center;
       align-items: center;
       z-index: 9999;
       opacity: 1;
-      transition: opacity 0.5s ease;
+      transition: opacity 0.4s ease;
     }
     #loader img {
       max-width: 200px;
+      width: auto;
+      height: auto;
     }
 
-    /* Основной контент (по умолчанию скрыт) */
-    #mainContent {
+    /* Контейнер всех экранов */
+    #appWrapper {
+      position: relative;
       width: 100%;
-      opacity: 0;
-      transition: opacity 0.5s ease;
-      display: flex;
-      flex-direction: column;
-      align-items: flex-start;
+      height: 100%;
     }
 
-    h1 {
+    /* Общий класс для экранов */
+    .screen {
+      position: absolute;
+      top: 0; 
+      left: 0;
+      width: 100%;
+      height: 100%;
+      display: none; /* Изначально экран скрыт */
+      box-sizing: border-box;
+    }
+    .screen.active {
+      display: flex; /* При "активности" показываем (флекс) */
+    }
+
+    /* Для экранов 1 и 2: вертикальное центрирование */
+    #mainScreen,
+    #appsScreen {
+      justify-content: center; /* центр по вертикали */
+      align-items: center;     /* центр по горизонтали */
+    }
+
+    /* Внутренний блок без ограничений по ширине и без боковых отступов */
+    .inner-container {
+      width: 100%;
+      margin: 0;
+      padding: 0;
+      text-align: left;
+    }
+
+    .inner-container h1 {
       font-size: 20px;
-      font-weight: 600;
-      margin-bottom: 16px;
+      font-weight: 50;
       color: #007aff;
+      margin-bottom: 16px; /* Отступ между заголовком и кнопками */
+      padding: 0 12px;     /* Небольшие боковые отступы, если хотите */
     }
 
     .buttons-container {
@@ -76,8 +119,9 @@
       gap: 8px;
     }
 
-    /* Стиль кнопок */
+    /* Стиль кнопок (ОС/приложения): заполняют всю ширину */
     .os-button {
+      font-family: 'SF-Pro-Display-Regular';
       display: flex;
       align-items: center;
       justify-content: space-between;
@@ -85,8 +129,10 @@
       border-radius: 8px;
       text-decoration: none;
       color: #fff;
-      padding: 6px;
-      width: 100%;
+      padding: 12px;
+      margin-left: 10px;
+      height: 47px;
+      width: 97%; /* ВАЖНО: на всю ширину родителя */
     }
     .os-button:hover {
       background-color: #3a3a3c;
@@ -98,59 +144,28 @@
       gap: 16px;
     }
 
-    /* Базовый стиль подложки */
+    /* Подложка для иконки ОС */
     .os-icon-wrap {
-      width: 36px;
-      height: 36px;
+      width: 30px;
+      height: 30px;
       border-radius: 6px;
       display: flex;
       align-items: center;
       justify-content: center;
       overflow: hidden;
     }
-    /* Фон для каждого */
-    .ios-bg { background-color: #ffffff; }
+    .ios-bg { background-color: #fff; }
+    .ios-bg img { width: 22px; height: 22px; }
     .android-bg { background-color: #fb1c1c; }
-    .macos-bg { background-color: black; }
-    .windows-bg { background-color: white; }
+    .android-bg img { width: 22px; height: 22px; }
+    .macos-bg { background-color: #000; }
+    .macos-bg img { width: 24px; height: auto; }
+    .windows-bg { background-color: #fff; }
+    .windows-bg img { width: 22px; height: 22px; }
     .linux-bg { background-color: #f7b824; }
+    .linux-bg img { width: 23px; height: 23px; }
 
-    /* Общий стиль для иконок - убираем max-width/height */
-    .os-icon-wrap img {
-      display: block;
-    }
-
-    /* Например, iOS пусть будет точно 24×24 */
-    .ios-bg img {
-      width: 26px;
-      height: 26px;
-    }
-
-    /* Android 20×20 */
-    .android-bg img {
-      width: 25px;
-      height: 25px;
-    }
-
-    /* MacOS - УВЕЛИЧИВАЕМ иконку, например до 64px по ширине */
-    .macos-bg img {
-      width: 30px; /* принудительно больше, чем исходный размер */
-      height: auto; 
-    }
-
-    /* Windows 26×26 */
-    .windows-bg img {
-      width: 26px;
-      height: 26px;
-    }
-
-    /* Linux 24×24 */
-    .linux-bg img {
-      width: 28px;
-      height: 28px;
-    }
-
-    /* Стрелочка */
+    /* Маленькая стрелка справа */
     .arrow-icon {
       width: 11px;
       height: 13px;
@@ -163,6 +178,102 @@
       stroke-linecap: round;
       stroke-linejoin: round;
     }
+
+    /* Кнопка «Назад» */
+    .back-button {
+      position: absolute;
+      top: 16px;
+      left: 16px;
+      z-index: 10;
+      display: flex;
+      align-items: center;
+      color: #007aff;
+      text-decoration: none;
+      font-size: 16px;
+      font-weight: 500;
+    }
+    .back-button:hover {
+      opacity: 0.8;
+    }
+    .back-button svg {
+      width: 16px;
+      height: 16px;
+      margin-right: 6px;
+    }
+    .back-button path {
+      fill: none;
+      stroke: #007aff;
+      stroke-width: 1.5;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    /* Экран Hiddify (инструкция) */
+    .centered-content {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      width: 100%;
+      height: calc(100% - 100px);
+      text-align: center;
+      padding: 16px;
+      box-sizing: border-box;
+    }
+
+    .instruction-line {
+      display: flex;
+      align-items: flex-start;
+      justify-content: flex-start;
+      width: 80%;
+      max-width: 500px;
+      margin: 12px 0;
+      font-size: 22px;
+      text-align: left;
+      white-space: normal;
+    }
+    .instruction-line::before {
+      content: attr(data-number);
+      color: #888;
+      margin-right: 8px;
+      font-weight: bold;
+      flex-shrink: 0;
+    }
+    .instruction-line span {
+      color: #fff; /* Основной цвет текста */
+    }
+    .instruction-line span.gray-text {
+      color: #888; /* Серый цвет для перенесенного текста */
+    }
+
+    /* Контейнер для кнопки "Скачать" */
+    .download-button-container {
+      position: absolute;
+      bottom: 20px;
+      width: 100%;
+      display: flex;
+      justify-content: center;
+    }
+
+    /* Кнопка «Скачать» */
+    .download-button {
+      font-family: 'SF-Pro-Display-Medium';
+      display: block;
+      background: #fff;
+      color: #000;
+      text-decoration: none;
+      font-size: 18px;
+      padding: 16px 28px;
+      border-radius: 18px;
+      width: 80%;   
+      height: 10%;  
+      max-height: 70px;
+      max-width: 500px;
+      text-align: center;
+    }
+    .download-button:hover {
+      opacity: 0.8;
+    }
   </style>
 </head>
 <body>
@@ -172,97 +283,292 @@
   <img src="Cloud With Lightning.webp" alt="Loading...">
 </div>
 
-<!-- Основной контент -->
-<div id="mainContent">
+<div id="appWrapper">
+  <!-- Экран 1: Выбор ОС -->
+  <div id="mainScreen" class="screen">
+    <div class="inner-container">
+      <h1>Выберите операционную систему</h1>
+      <div class="buttons-container">
+        <!-- iOS -->
+        <a href="#" class="os-button" data-os="iOS">
+          <div class="os-left">
+            <div class="os-icon-wrap ios-bg">
+              <img src="https://www.svgrepo.com/show/473543/apple.svg" alt="iOS">
+            </div>
+            <span>iOS</span>
+          </div>
+          <svg class="arrow-icon" viewBox="0 0 6 8" xmlns="http://www.w3.org/2000/svg">
+            <path d="M1 1 L5 4 L1 7" />
+          </svg>
+        </a>
+        <!-- Android -->
+        <a href="#" class="os-button" data-os="Android">
+          <div class="os-left">
+            <div class="os-icon-wrap android-bg">
+              <img src="https://www.svgrepo.com/show/475631/android-color.svg" alt="Android">
+            </div>
+            <span>Android</span>
+          </div>
+          <svg class="arrow-icon" viewBox="0 0 6 8" xmlns="http://www.w3.org/2000/svg">
+            <path d="M1 1 L5 4 L1 7" />
+          </svg>
+        </a>
+        <!-- MacOS -->
+        <a href="#" class="os-button" data-os="MacOS">
+          <div class="os-left">
+            <div class="os-icon-wrap macos-bg">
+              <img src="https://img.icons8.com/color/48/mac-logo.png" alt="macOS">
+            </div>
+            <span>MacOS</span>
+          </div>
+          <svg class="arrow-icon" viewBox="0 0 6 8" xmlns="http://www.w3.org/2000/svg">
+            <path d="M1 1 L5 4 L1 7" />
+          </svg>
+        </a>
+        <!-- Windows -->
+        <a href="#" class="os-button" data-os="Windows">
+          <div class="os-left">
+            <div class="os-icon-wrap windows-bg">
+              <img src="https://www.svgrepo.com/show/382713/windows-applications.svg" alt="Windows">
+            </div>
+            <span>Windows</span>
+          </div>
+          <svg class="arrow-icon" viewBox="0 0 6 8" xmlns="http://www.w3.org/2000/svg">
+            <path d="M1 1 L5 4 L1 7" />
+          </svg>
+        </a>
+        <!-- Linux -->
+        <a href="#" class="os-button" data-os="Linux">
+          <div class="os-left">
+            <div class="os-icon-wrap linux-bg">
+              <img src="https://upload.wikimedia.org/wikipedia/commons/3/35/Tux.svg" alt="Linux">
+            </div>
+            <span>Linux</span>
+          </div>
+          <svg class="arrow-icon" viewBox="0 0 6 8" xmlns="http://www.w3.org/2000/svg">
+            <path d="M1 1 L5 4 L1 7" />
+          </svg>
+        </a>
+      </div><!-- /.buttons-container -->
+    </div><!-- /.inner-container -->
+  </div><!-- /#mainScreen -->
 
-  <h1>Выберите операционную систему</h1>
-
-  <div class="buttons-container">
-
-    <!-- iOS -->
-    <a href="#" class="os-button">
-      <div class="os-left">
-        <div class="os-icon-wrap ios-bg">
-          <img src="https://www.svgrepo.com/show/473543/apple.svg" alt="iOS">
-        </div>
-        <span>iOS</span>
-      </div>
-      <svg viewBox="0 0 6 8" class="arrow-icon" xmlns="http://www.w3.org/2000/svg">
-        <path d="M1 1 L5 4 L1 7" />
+  <!-- Экран 2: Выбор приложения -->
+  <div id="appsScreen" class="screen">
+    <a href="#" class="back-button" id="backBtnApps">
+      <svg viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
+        <path d="M10 12L6 8l4-4"/>
       </svg>
+      <span>Назад</span>
     </a>
 
-    <!-- Android -->
-    <a href="#" class="os-button">
-      <div class="os-left">
-        <div class="os-icon-wrap android-bg">
-          <img src="https://www.svgrepo.com/show/475631/android-color.svg" alt="Android">
-        </div>
-        <span>Android</span>
-      </div>
-      <svg viewBox="0 0 6 8" class="arrow-icon" xmlns="http://www.w3.org/2000/svg">
-        <path d="M1 1 L5 4 L1 7" />
+    <div class="inner-container">
+      <h1>Выбрать приложение</h1>
+      <div class="buttons-container" id="appsList"></div>
+    </div>
+  </div><!-- /#appsScreen -->
+
+  <!-- Экран 3: Инструкция для Hiddify -->
+  <div id="hiddifyScreen" class="screen">
+    <!-- Кнопка «Назад» в левом верхнем углу -->
+    <a href="#" class="back-button" id="backBtnHiddify">
+      <svg viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
+        <path d="M10 12L6 8l4-4"/>
       </svg>
+      <span>Назад</span>
     </a>
 
-    <!-- MacOS -->
-    <a href="#" class="os-button">
-      <div class="os-left">
-        <div class="os-icon-wrap macos-bg">
-          <!-- Эта иконка будет принудительно растянута до 64 пикселей ширины -->
-          <img src="https://img.icons8.com/color/48/mac-logo.png" alt="macOS">
-        </div>
-        <span>MacOS</span>
+    <div class="centered-content">
+      <div class="instruction-line" data-number="1">
+        <span>Скачайте приложение Hiddify;</span>
       </div>
-      <svg viewBox="0 0 6 8" class="arrow-icon" xmlns="http://www.w3.org/2000/svg">
-        <path d="M1 1 L5 4 L1 7" />
-      </svg>
-    </a>
-
-    <!-- Windows -->
-    <a href="#" class="os-button">
-      <div class="os-left">
-        <div class="os-icon-wrap windows-bg">
-          <img src="https://www.svgrepo.com/show/382713/windows-applications.svg" alt="Windows">
-        </div>
-        <span>Windows</span>
+      <div class="instruction-line" data-number="2">
+        <span>Нажмите кнопку «⚡ Подключиться» в главном меню бота.</span>
       </div>
-      <svg viewBox="0 0 6 8" class="arrow-icon" xmlns="http://www.w3.org/2000/svg">
-        <path d="M1 1 L5 4 L1 7" />
-      </svg>
-    </a>
+    </div>
 
-    <!-- Linux -->
-    <a href="#" class="os-button">
-      <div class="os-left">
-        <div class="os-icon-wrap linux-bg">
-          <img src="https://upload.wikimedia.org/wikipedia/commons/3/35/Tux.svg" alt="Linux">
-        </div>
-        <span>Linux</span>
-      </div>
-      <svg viewBox="0 0 6 8" class="arrow-icon" xmlns="http://www.w3.org/2000/svg">
-        <path d="M1 1 L5 4 L1 7" />
-      </svg>
-    </a>
-    
-  </div><!-- /buttons-container -->
-
-</div><!-- /#mainContent -->
+    <div class="download-button-container">
+      <a href="https://hiddify.com/" target="_blank" class="download-button">
+        Скачать
+      </a>
+    </div>
+  </div><!-- /#hiddifyScreen -->
+</div><!-- /#appWrapper -->
 
 <script>
-  // Генерируем случайное время от 2 до 4 секунд
+  // Логика загрузчика и переключения экранов
   const randomTime = Math.floor(Math.random() * (4000 - 2000 + 1)) + 2000;
   const loader = document.getElementById('loader');
-  const main = document.getElementById('mainContent');
-
   setTimeout(() => {
     loader.style.opacity = '0';
     setTimeout(() => {
       loader.style.display = 'none';
-      main.style.opacity = '1';
-    }, 500);
+      mainScreen.classList.add('active');
+    }, 400);
   }, randomTime);
-</script>
 
+  const mainScreen = document.getElementById('mainScreen');
+  const appsScreen = document.getElementById('appsScreen');
+  const hiddifyScreen = document.getElementById('hiddifyScreen');
+
+  function showScreen(screen) {
+    screen.classList.add('active');
+  }
+  function hideScreen(screen) {
+    screen.classList.remove('active');
+  }
+
+  const appsList = document.getElementById('appsList');
+  const appsForOS = {
+    iOS:     ["Hiddify", "FoXray"],
+    Android: ["Hiddify", "NekoBox"],
+    MacOS:   ["Hiddify", "FoXray"],
+    Windows: ["Hiddify", "Nekoray"],
+    Linux:   ["Hiddify", "Nekoray"]
+  };
+  const appsIcons = {
+    "Hiddify": "https://www.svgrepo.com/show/475631/android-color.svg",
+    "FoXray":  "https://www.svgrepo.com/show/473543/apple.svg",
+    "NekoBox": "https://upload.wikimedia.org/wikipedia/commons/3/35/Tux.svg",
+    "Nekoray": "https://www.svgrepo.com/show/382713/windows-applications.svg"
+  };
+
+  const osButtons = document.querySelectorAll('.os-button[data-os]');
+  osButtons.forEach(btn => {
+    btn.addEventListener('click', (ev) => {
+      ev.preventDefault();
+      const osName = btn.getAttribute('data-os');
+      appsList.innerHTML = '';
+
+      appsForOS[osName].forEach(appName => {
+        const a = document.createElement('a');
+        a.className = 'os-button';
+        a.href = '#';
+
+        const leftDiv = document.createElement('div');
+        leftDiv.className = 'os-left';
+
+        const iconWrap = document.createElement('div');
+        iconWrap.className = 'os-icon-wrap';
+        iconWrap.style.background = '#555'; // Примерный серый фон
+
+        const img = document.createElement('img');
+        img.src = appsIcons[appName] || "https://via.placeholder.com/24";
+        iconWrap.appendChild(img);
+
+        const spanApp = document.createElement('span');
+        spanApp.textContent = appName;
+
+        leftDiv.appendChild(iconWrap);
+        leftDiv.appendChild(spanApp);
+
+        const svgArrow = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+        svgArrow.setAttribute("viewBox","0 0 6 8");
+        svgArrow.classList.add('arrow-icon');
+        const pathArrow = document.createElementNS("http://www.w3.org/2000/svg","path");
+        pathArrow.setAttribute("d","M1 1 L5 4 L1 7");
+        pathArrow.style.fill = 'none';
+        pathArrow.style.stroke = '#888';
+        pathArrow.style.strokeWidth = '1.2';
+        pathArrow.style.strokeLinecap = 'round';
+        pathArrow.style.strokeLinejoin = 'round';
+        svgArrow.appendChild(pathArrow);
+
+        a.appendChild(leftDiv);
+        a.appendChild(svgArrow);
+
+        a.addEventListener('click', (appEv) => {
+          appEv.preventDefault();
+          if (appName === "Hiddify") {
+            hideScreen(appsScreen);
+            showScreen(hiddifyScreen);
+          } else {
+            alert("Нажато приложение: " + appName);
+          }
+        });
+
+        appsList.appendChild(a);
+      });
+
+      // Переходим со "старого" экрана на "новый"
+      hideScreen(mainScreen);
+      showScreen(appsScreen);
+    });
+  });
+
+  // Назад с экрана выбора приложений
+  const backBtnApps = document.getElementById('backBtnApps');
+  backBtnApps.addEventListener('click', (ev) => {
+    ev.preventDefault();
+    hideScreen(appsScreen);
+    showScreen(mainScreen);
+  });
+
+  // Назад с экрана инструкции
+  const backBtnHiddify = document.getElementById('backBtnHiddify');
+  backBtnHiddify.addEventListener('click', (ev) => {
+    ev.preventDefault();
+    hideScreen(hiddifyScreen);
+    showScreen(appsScreen);
+  });
+
+  // Пример функции для добавления серого цвета к перенесенному тексту
+  function handleTextOverflow() {
+    const instructionLines = document.querySelectorAll('.instruction-line');
+    
+    instructionLines.forEach(line => {
+      const mainSpan = line.querySelector('span');
+      const originalText = mainSpan.textContent.trim();
+      
+      // Контейнер, в котором измеряем ширину (сам .instruction-line)
+      const containerWidth = line.clientWidth;
+
+      // Временный элемент для замера
+      const tempSpan = document.createElement('span');
+      tempSpan.style.visibility = 'hidden';
+      tempSpan.style.whiteSpace = 'nowrap';
+      document.body.appendChild(tempSpan);
+
+      const words = originalText.split(' ');
+      let firstLineWords = [];
+      let breakIndex = -1; // индекс, на котором нужно «переносить» текст
+
+      for (let i = 0; i < words.length; i++) {
+        // Пробуем добавить текущее слово в нашу «первую строку»
+        firstLineWords.push(words[i]);
+        tempSpan.textContent = firstLineWords.join(' ');
+
+        // Если не влезает
+        if (tempSpan.offsetWidth > containerWidth) {
+          // Если это первое же слово — выходим вообще без переноса
+          if (i === 0) {
+            breakIndex = -1; 
+          } else {
+            // «Перенос» будет перед последним добавленным словом
+            breakIndex = i;
+          }
+          break;
+        }
+      }
+
+      // Удаляем временный элемент
+      document.body.removeChild(tempSpan);
+
+      // Если breakIndex так и остался -1, значит всё влезло (или не влезло даже первое слово)
+      if (breakIndex === -1) {
+        mainSpan.textContent = originalText; // всё белое, без переноса
+      } else {
+        // firstLine — белая часть (до breakIndex)
+        // secondLine — серая часть (оставшиеся слова)
+        const firstLine = words.slice(0, breakIndex).join(' ');
+        const secondLine = words.slice(breakIndex).join(' ');
+        mainSpan.innerHTML = `${firstLine} <span class="gray-text">${secondLine}</span>`;
+      }
+    });
+  }
+
+  // Вызываем функцию после полной загрузки страницы
+  window.addEventListener('load', handleTextOverflow);
+</script>
 </body>
 </html>
