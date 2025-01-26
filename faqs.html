@@ -72,7 +72,7 @@
       position: absolute;
       top: 0; left: 0;
       width: 100%; height: 100%;
-      display: none !important; /* именно !important */
+      display: none !important; /* скрыто до .active */
       box-sizing: border-box;
     }
     .screen.active {
@@ -90,20 +90,17 @@
     .inner-container h1 {
       font-size: 20px;
       font-weight: 50;
-      color: #0E7AFE; /* синий */
+      color: #0E7AFE;
       margin-bottom: 16px;
       padding: 0 12px;
     }
     .buttons-container {
-      width: 100%;
-      display: flex; flex-direction: column;
-      gap: 8px;
+      width: 100%; display: flex; flex-direction: column; gap: 8px;
     }
 
-    /* КНОПКИ ВОПРОСОВ */
+    /* КНОПКИ-ВОПРОСОВ */
     .faq-button {
-      font-size: 19px;
-      font-family: 'SF-Pro-Display-Regular';
+      font-size: 19px; font-family: 'SF-Pro-Display-Regular';
       display: flex; align-items: center; justify-content: space-between;
       background-color: #2c2c2e;
       border-radius: 8px;
@@ -133,11 +130,7 @@
       stroke-linecap: round; stroke-linejoin: round;
     }
 
-    /*
-      -- ЭКРАНЫ ОТВЕТОВ --
-      При малом тексте - центр по вертикали,
-      При большом - появляется прокрутка сверху
-    */
+    /* ЭКРАНЫ ОТВЕТОВ */
     .answer-screen {
       display: flex; /* скрыто до .active */
       width: 100%; height: 100%;
@@ -152,7 +145,7 @@
     /* Абзац: первая строка белая, остальные серые */
     .instruction-line {
       display: block;
-      color: #888; /* серый по умолчанию */
+      color: #888;
       margin: 12px 0;
       font-size: 20px;
       line-height: 1.4;
@@ -172,7 +165,6 @@
     .instruction-line strong {
       font-weight: bold;
     }
-
   </style>
 </head>
 <body>
@@ -314,7 +306,6 @@
       </div>
     </div>
   </div>
-
 </div><!-- /#appWrapper -->
 
 <script>
@@ -327,75 +318,75 @@
       loader.style.display = 'none';
       // показать список вопросов
       faqMainScreen.classList.add('active');
+      // Сразу при первом показе: сделать кнопку "Закрыть"
+      setupCloseMode();
     }, 400);
   }, randomTime);
 
   // ===== ПЕРЕМЕННЫЕ ЭКРАНОВ =====
   const faqMainScreen = document.getElementById('faqMainScreen');
-  const faq1Screen    = document.getElementById('faq1Screen');
-  const faq2Screen    = document.getElementById('faq2Screen');
-  const faq3Screen    = document.getElementById('faq3Screen');
-  const faq4Screen    = document.getElementById('faq4Screen');
-  const faq5Screen    = document.getElementById('faq5Screen');
+  const faq1Screen = document.getElementById('faq1Screen');
+  const faq2Screen = document.getElementById('faq2Screen');
+  const faq3Screen = document.getElementById('faq3Screen');
+  const faq4Screen = document.getElementById('faq4Screen');
+  const faq5Screen = document.getElementById('faq5Screen');
 
-  // Соберём их в массив, чтобы прятать скопом
   const answerScreens = [faq1Screen, faq2Screen, faq3Screen, faq4Screen, faq5Screen];
 
-  function showScreen(screen) {
-    screen.classList.add('active');
-    updateBackButtonVisibility();
-  }
-  function hideScreen(screen) {
-    screen.classList.remove('active');
-    updateBackButtonVisibility();
-  }
-  function hideAllAnswerScreens() {
-    answerScreens.forEach(s => s.classList.remove('active'));
-  }
-
-  // ===== Telegram WebApp + кнопка «Назад» =====
+  // ===== ТЕЛЕГРАМ WEBAPP =====
   Telegram.WebApp.ready();
 
-  function updateBackButtonVisibility() {
-    if (faqMainScreen.classList.contains('active')) {
-      // на главном экране FAQ - скрыть кнопку "Назад"
-      Telegram.WebApp.BackButton.hide();
-    } else {
-      // на экране ответа - показать кнопку "Назад"
-      Telegram.WebApp.BackButton.show();
-    }
+  // Режим "Закрыть" (на главном экране)
+  function setupCloseMode() {
+    Telegram.WebApp.BackButton.setText("Закрыть");
+    Telegram.WebApp.BackButton.show();
+    // При нажатии — закрываем
+    Telegram.WebApp.BackButton.onClick(() => {
+      Telegram.WebApp.close();
+    });
   }
-  updateBackButtonVisibility(); // при загрузке
 
-  Telegram.WebApp.BackButton.onClick(() => {
-    // Если открыт какой-то экран ответа - прячем его, показываем главный
-    for (let scr of answerScreens) {
-      if (scr.classList.contains('active')) {
-        hideScreen(scr);
-        showScreen(faqMainScreen);
-        return;
+  // Режим "Назад" (на экранах ответа)
+  function setupBackMode() {
+    Telegram.WebApp.BackButton.setText("Назад");
+    Telegram.WebApp.BackButton.show();
+    Telegram.WebApp.BackButton.onClick(() => {
+      // Скрыть текущий экран ответа, показать главный
+      for (let scr of answerScreens) {
+        if (scr.classList.contains('active')) {
+          scr.classList.remove('active');
+          faqMainScreen.classList.add('active');
+          // Теперь снова "Закрыть"
+          setupCloseMode();
+          return;
+        }
       }
-    }
-  });
+    });
+  }
 
-  // ===== КЛИК ПО ВОПРОСУ =====
+  // ===== КЛИКИ ПО ВОПРОСАМ =====
   const faqButtons = document.querySelectorAll('.faq-button[data-faq]');
   faqButtons.forEach(btn => {
     btn.addEventListener('click', (ev) => {
       ev.preventDefault();
       const faqIndex = btn.getAttribute('data-faq');
-      // Скрыть список, спрятать все ответы
-      hideScreen(faqMainScreen);
-      hideAllAnswerScreens();
 
-      // Показать нужный
+      // Переходим с главного экрана на ответ
+      faqMainScreen.classList.remove('active');
+      // прячем все ответы
+      answerScreens.forEach(s => s.classList.remove('active'));
+
+      // Показать нужный экран
       switch (faqIndex) {
-        case "1": showScreen(faq1Screen); break;
-        case "2": showScreen(faq2Screen); break;
-        case "3": showScreen(faq3Screen); break;
-        case "4": showScreen(faq4Screen); break;
-        case "5": showScreen(faq5Screen); break;
+        case "1": faq1Screen.classList.add('active'); break;
+        case "2": faq2Screen.classList.add('active'); break;
+        case "3": faq3Screen.classList.add('active'); break;
+        case "4": faq4Screen.classList.add('active'); break;
+        case "5": faq5Screen.classList.add('active'); break;
       }
+
+      // Теперь на экране ответа — кнопка "Назад"
+      setupBackMode();
     });
   });
 </script>
