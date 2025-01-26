@@ -77,9 +77,27 @@
       display: flex !important;
     }
 
+    /* Стили логотипа (только для главного экрана) */
+    .logo-container {
+      display: flex;
+      justify-content: center;
+      margin-top: -55px;
+      margin-bottom: 80px;
+      align-self: center;
+    }
+    .logo-container img {
+      max-width: 280px;
+      width: auto; 
+      height: auto;
+      align-self: center;
+    }
+
     /* Главный экран (список вопросов) */
     #faqMainScreen {
-      justify-content: center; align-items: center;
+      justify-content: flex-start;
+      align-items: flex-start;
+      flex-direction: column;
+      padding-top: 0; /* чтобы логотип был сверху */
     }
     .inner-container {
       width: 100%; text-align: left;
@@ -109,7 +127,6 @@
       display: flex; align-items: center; gap: 16px;
     }
 
-    /* Пример цветных фонов и размеров (по желанию) */
     .connect-bg { background-color: #00c4cc; }
     .free-bg    { background-color: white; }
     .noentry-bg { background-color: white; }
@@ -172,8 +189,13 @@
 </div>
 
 <div id="appWrapper">
-  <!-- Экран со списком -->
+  <!-- Экран со списком (тут показываем логотип) -->
   <div id="faqMainScreen" class="screen">
+    <!-- Логотип только на первом экране FAQ -->
+    <div class="logo-container">
+      <img src="weblogo.png" alt="WebLogo">
+    </div>
+
     <div class="inner-container">
       <h1>Часто задаваемые вопросы</h1>
       <div class="buttons-container">
@@ -332,7 +354,6 @@
   const loader = document.getElementById('loader');
   
   setTimeout(() => {
-    // Лёгкая анимация прозрачности
     loader.style.opacity = '0';
     setTimeout(() => {
       loader.style.display = 'none';

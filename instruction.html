@@ -77,9 +77,26 @@
       display: flex;
     }
 
+    /* Стили логотипа */
+    .logo-container {
+      display: flex;
+      justify-content: center;
+      margin-top: -55px;
+      margin-bottom: 80px;
+      align-self: center;
+    }
+    .logo-container img {
+      max-width: 280px;
+      width: auto; 
+      height: auto;
+      align-self: center;
+    }
+
     /* Экраны выбора ОС и приложения */
     #mainScreen, #appsScreen {
-      justify-content: center; align-items: center;
+      justify-content: flex-start; /* Сместим начало вниз, чтобы логотип был сверху */
+      align-items: flex-start;
+      flex-direction: column;
     }
     .inner-container {
       width: 100%; margin: 0; padding: 0; text-align: left;
@@ -276,6 +293,11 @@
 <div id="appWrapper">
   <!-- Экран 1: Выбор ОС -->
   <div id="mainScreen" class="screen">
+    <!-- Блок логотипа (только на первом экране) -->
+    <div class="logo-container">
+      <img src="weblogo.png" alt="WebLogo">
+    </div>
+
     <div class="inner-container">
       <h1>Выберите операционную систему</h1>
       <div class="buttons-container">
@@ -345,6 +367,11 @@
 
   <!-- Экран 2: Выбор приложения -->
   <div id="appsScreen" class="screen">
+    <!-- Блок логотипа (только на втором экране) -->
+    <div class="logo-container">
+      <img src="weblogo.png" alt="WebLogo">
+    </div>
+
     <div class="inner-container">
       <h1>Выберите приложение</h1>
       <div class="buttons-container" id="appsList"></div>

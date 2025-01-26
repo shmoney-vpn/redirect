@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <title>ShmoneyVPN - Установка</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  
+
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
     @font-face {
@@ -14,17 +14,18 @@
       font-style: normal;
     }
 
-    /* СБРОС */
+    /* Сброс */
     * {
       margin: 0; 
       padding: 0; 
       box-sizing: border-box;
     }
     html, body {
-      width: 100%; height: 100%;
+      width: 100%; 
+      height: 100%;
       background: #000;
       font-family: 'SF-Pro-Display-Regular', 'Roboto', sans-serif;
-      overflow: hidden;
+      overflow: hidden; 
       color: #fff;
     }
 
@@ -40,31 +41,34 @@
       transition: opacity 0.4s ease;
     }
     #loader img {
-      max-width: 200px; width: auto; height: auto;
+      max-width: 200px;
+      width: auto; 
+      height: auto;
     }
 
-    /* FLEX разметка:
-       - .page-wrapper (колонка)
-       - .header (вверху)
-       - .center-content (по центру оставшегося места)
-    */
+    /* Основная Flex-разметка:
+       - .page-wrapper (верстка в столбик)
+       - .header (верхняя зона)
+       - .center-content (центр экрана) */
     .page-wrapper {
       display: flex;
       flex-direction: column;
-      width: 100%; height: 100%;
+      width: 100%; 
+      height: 100%;
     }
     .header {
       width: 100%;
       padding: 16px 0;
       text-align: center;
     }
-    .logo-text {
-      font-size: 38px;
-      font-weight: 700;
-      
-      text-shadow: 1px 1px 3px rgba(0,0,0,0.5);
+    /* Логотип вверху (weblogo.png) */
+    .header-logo {
+      margin-top: -70px;
+      max-width: 280px;
+      /* Можно при необходимости задать height:auto или другие стили */
     }
 
+    /* Центр: растягивается, чтобы картинка + текст были посередине */
     .center-content {
       flex: 1; 
       display: flex; 
@@ -72,7 +76,7 @@
       align-items: center; 
       justify-content: center;
       text-align: center;
-      margin-top: -50px;
+      margin-top: -150px;
     }
 
     /* Картинка (изначально voltage.webp) */
@@ -86,16 +90,17 @@
     }
 
     /* 
-      Анимация «помигивания» (brightness).
-      Можно вместо brightness использовать opacity/scale и т.д.
+      Анимация «помигивания» (brightness) для картинки:
+      от brightness(1) до brightness(0.7)
     */
     @keyframes imageBlink {
-      0%   { filter: brightness(1); }
+      0%   { filter: brightness(1);   }
       50%  { filter: brightness(0.7); }
-      100% { filter: brightness(1); }
+      100% { filter: brightness(1);   }
     }
-    /* Применяем для начального изображения */
-    
+    .image-blink {
+      animation: imageBlink 2s infinite;
+    }
 
     /* Контейнер под текст (фикс. высота => не скачет при смене) */
     .text-container {
@@ -106,7 +111,7 @@
       justify-content: center;
     }
 
-    /* Изначально “Нажмите, чтобы подключиться” (белый <-> серый) */
+    /* Изначально «Нажмите, чтобы подключиться» (белый <-> серый) */
     .hint-text {
       font-size: 23px;
       animation: textBlink 2s infinite;
@@ -117,11 +122,11 @@
       100% { color: #fff; }
     }
 
-    /* “Вы подключены!” (зелёное мигание) */
+    /* «Вы подключены!» (зелёное мигание) */
     @keyframes textBlinkGreen {
-      0%   { color: lime; }
+      0%   { color: lime;    }
       50%  { color: #88ff88; }
-      100% { color: lime; }
+      100% { color: lime;    }
     }
     .connected-text {
       font-size: 23px;
@@ -132,7 +137,6 @@
   <script>
     document.addEventListener("DOMContentLoaded", function(){
 
-      // Функция возврата
       function revertToInitial() {
         mainImage.src = "voltage.webp";
         mainImage.classList.add("image-blink"); 
@@ -141,16 +145,15 @@
         isAnimating = false;
       }
 
-      // Считываем ?url=...
+      // Параметр ?url=...
       const params = new URLSearchParams(window.location.search);
       const appUrl = params.get('url'); 
 
-      // Ссылки
       const loader     = document.getElementById("loader");
       const mainImage  = document.getElementById("mainImage");
       const statusText = document.getElementById("statusText");
 
-      // Лоадер (пример: 1с)
+      // Убираем лоадер (пример: 1с)
       setTimeout(() => {
         loader.style.opacity = '0';
         setTimeout(() => {
@@ -174,7 +177,7 @@
         // Прячем “Нажмите...”
         statusText.style.display = "none";
 
-        // Через 2с -> “Вы подключены!”
+        // Через 2с -> «Вы подключены!»
         setTimeout(() => {
           statusText.textContent = "Вы подключены!";
           statusText.className = "connected-text";
@@ -183,7 +186,7 @@
           // Через 1с -> редирект/откат
           setTimeout(() => {
             if (appUrl) {
-            
+              // alert("Переходим на: " + appUrl);
               window.location.href = appUrl;
 
               // Если редирект не сработал, вернёмся через 2с
@@ -192,7 +195,7 @@
               }, 2000);
 
             } else {
-              // Нет URL => ошибка + откат
+              // Нет URL => откат
               alert("Параметр ?url= не задан. Редирект невозможен.");
               revertToInitial();
             }
@@ -212,7 +215,8 @@
   <div class="page-wrapper">
     <!-- Верхняя шапка -->
     <div class="header">
-      <div class="logo-text">ShmoneyVPN</div>
+      <!-- Лого изображение вместо текста -->
+      <img src="weblogo.png" alt="ShmoneyVPN" class="header-logo" />
     </div>
 
     <!-- Центр -->
