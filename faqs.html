@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+  <title>FAQ - ShmoneyVPN</title>
+
+  <!-- Скрипт Telegram WebApp -->
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+
+  <style>
+    @font-face {
+      font-family: 'SF-Pro-Display-Regular';
+      src: url('SF-Pro-Display-Regular.otf') format('opentype');
+      font-weight: 100;
+      font-style: normal;
+    }
+    @font-face {
+      font-family: 'SF-Pro-Display-Bold';
+      src: url('SF-Pro-Display-Bold.otf') format('opentype');
+      font-weight: 100;
+      font-style: normal;
+    }
+    @font-face {
+      font-family: 'SF-Pro-Display-Thin';
+      src: url('SF-Pro-Display-Thin.otf') format('opentype');
+      font-weight: 100;
+      font-style: normal;
+    }
+    @font-face {
+      font-family: 'SF-Pro-Display-Medium';
+      src: url('SF-Pro-Display-Medium.otf') format('opentype');
+      font-weight: 100;
+      font-style: normal;
+    }
+
+    /* СБРОС */
+    * {
+      margin: 0; padding: 0; box-sizing: border-box;
+    }
+    html, body {
+      width: 100%; height: 100%;
+      background: #000; color: #fff;
+      font-family: 'SF-Pro-Display-Regular', -apple-system,
+                   BlinkMacSystemFont, "Segoe UI", Roboto,
+                   "Helvetica Neue", Arial, sans-serif;
+      overflow: hidden; /* исключаем прокрутку */
+    }
+
+    /* ЗАГРУЗОЧНЫЙ ЭКРАН */
+    #loader {
+      position: absolute; top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: #000;
+      display: flex; justify-content: center; align-items: center;
+      z-index: 9999;
+      opacity: 1;
+      transition: opacity 0.4s ease;
+    }
+    #loader img {
+      max-width: 200px; width: auto; height: auto;
+    }
+
+    /* КОНТЕЙНЕР ВСЕХ ЭКРАНОВ */
+    #appWrapper {
+      position: relative;
+      width: 100%; height: 100%;
+    }
+
+    /* ВАЖНО: изначально принудительно скрываем все .screen */
+    .screen {
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      display: none !important; /* именно !important */
+      box-sizing: border-box;
+    }
+    .screen.active {
+      display: flex !important; /* показываем только при .active */
+    }
+
+    /* ГЛАВНЫЙ ЭКРАН (СПИСОК ВОПРОСОВ) */
+    #faqMainScreen {
+      justify-content: center;
+      align-items: center;
+    }
+    .inner-container {
+      width: 100%; margin: 0; padding: 0; text-align: left;
+    }
+    .inner-container h1 {
+      font-size: 20px;
+      font-weight: 50;
+      color: #0E7AFE; /* синий */
+      margin-bottom: 16px;
+      padding: 0 12px;
+    }
+    .buttons-container {
+      width: 100%;
+      display: flex; flex-direction: column;
+      gap: 8px;
+    }
+
+    /* КНОПКИ ВОПРОСОВ */
+    .faq-button {
+      font-size: 19px;
+      font-family: 'SF-Pro-Display-Regular';
+      display: flex; align-items: center; justify-content: space-between;
+      background-color: #2c2c2e;
+      border-radius: 8px;
+      text-decoration: none; color: #fff;
+      padding: 12px; margin-left: 10px;
+      height: 47px; width: 97%;
+    }
+    .faq-button:hover {
+      background-color: #3a3a3c;
+    }
+    .faq-left {
+      display: flex; align-items: center; gap: 16px;
+    }
+    .faq-icon-wrap {
+      width: 30px; height: 30px; border-radius: 6px;
+      display: flex; align-items: center; justify-content: center;
+      background-color: #3a3a3c;
+    }
+    .faq-icon-wrap img {
+      width: 18px; height: 18px;
+    }
+    .arrow-icon {
+      width: 11px; height: 13px; margin-right: 12px;
+    }
+    .arrow-icon path {
+      fill: none; stroke: #888; stroke-width: 1.2;
+      stroke-linecap: round; stroke-linejoin: round;
+    }
+
+    /*
+      -- ЭКРАНЫ ОТВЕТОВ --
+      При малом тексте - центр по вертикали,
+      При большом - появляется прокрутка сверху
+    */
+    .answer-screen {
+      display: flex; /* скрыто до .active */
+      width: 100%; height: 100%;
+      justify-content: center;  /* по центру по горизонтали */
+      align-items: center;      /* по центру по вертикали, если мало текста */
+      overflow-y: auto;         /* если много текста - прокрутка */
+      text-align: left;
+      padding: 16px;
+      box-sizing: border-box;
+    }
+
+    /* Абзац: первая строка белая, остальные серые */
+    .instruction-line {
+      display: block;
+      color: #888; /* серый по умолчанию */
+      margin: 12px 0;
+      font-size: 20px;
+      line-height: 1.4;
+      width: 100%;
+      max-width: 500px;
+      white-space: normal;
+    }
+    .instruction-line::first-line {
+      color: #fff; /* первая строка - белая */
+    }
+    .instruction-line a {
+      color: #0E7AFE;
+      text-decoration: underline;
+      word-break: break-all;
+    }
+    .instruction-line b,
+    .instruction-line strong {
+      font-weight: bold;
+    }
+
+  </style>
+</head>
+<body>
+<!-- ЗАГРУЗОЧНЫЙ ЭКРАН -->
+<div id="loader">
+  <img src="Cloud With Lightning.webp" alt="Loading...">
+</div>
+
+<div id="appWrapper">
+  <!-- ГЛАВНЫЙ ЭКРАН (список) -->
+  <div id="faqMainScreen" class="screen">
+    <div class="inner-container">
+      <h1>Часто задаваемые вопросы</h1>
+      <div class="buttons-container">
+        <!-- Вопрос 1 -->
+        <a href="#" class="faq-button" data-faq="1">
+          <div class="faq-left">
+            <div class="faq-icon-wrap">
+              <img src="https://www.svgrepo.com/show/374265/question.svg" alt="?" />
+            </div>
+            <span>Как подключиться к VPN?</span>
+          </div>
+          <svg class="arrow-icon" viewBox="0 0 6 8" xmlns="http://www.w3.org/2000/svg">
+            <path d="M1 1 L5 4 L1 7" />
+          </svg>
+        </a>
+        <!-- Вопрос 2 -->
+        <a href="#" class="faq-button" data-faq="2">
+          <div class="faq-left">
+            <div class="faq-icon-wrap">
+              <img src="https://www.svgrepo.com/show/374265/question.svg" alt="?" />
+            </div>
+            <span>Есть ли бесплатный тариф?</span>
+          </div>
+          <svg class="arrow-icon" viewBox="0 0 6 8" xmlns="http://www.w3.org/2000/svg">
+            <path d="M1 1 L5 4 L1 7" />
+          </svg>
+        </a>
+        <!-- Вопрос 3 -->
+        <a href="#" class="faq-button" data-faq="3">
+          <div class="faq-left">
+            <div class="faq-icon-wrap">
+              <img src="https://www.svgrepo.com/show/374265/question.svg" alt="?" />
+            </div>
+            <span>VPN не заблокируют?</span>
+          </div>
+          <svg class="arrow-icon" viewBox="0 0 6 8" xmlns="http://www.w3.org/2000/svg">
+            <path d="M1 1 L5 4 L1 7" />
+          </svg>
+        </a>
+        <!-- Вопрос 4 -->
+        <a href="#" class="faq-button" data-faq="4">
+          <div class="faq-left">
+            <div class="faq-icon-wrap">
+              <img src="https://www.svgrepo.com/show/374265/question.svg" alt="?" />
+            </div>
+            <span>Как оплатить подписку?</span>
+          </div>
+          <svg class="arrow-icon" viewBox="0 0 6 8" xmlns="http://www.w3.org/2000/svg">
+            <path d="M1 1 L5 4 L1 7" />
+          </svg>
+        </a>
+        <!-- Вопрос 5 -->
+        <a href="#" class="faq-button" data-faq="5">
+          <div class="faq-left">
+            <div class="faq-icon-wrap">
+              <img src="https://www.svgrepo.com/show/374265/question.svg" alt="?" />
+            </div>
+            <span>Как вернуть деньги?</span>
+          </div>
+          <svg class="arrow-icon" viewBox="0 0 6 8" xmlns="http://www.w3.org/2000/svg">
+            <path d="M1 1 L5 4 L1 7" />
+          </svg>
+        </a>
+      </div><!-- /.buttons-container -->
+    </div><!-- /.inner-container -->
+  </div><!-- /#faqMainScreen -->
+
+  <!-- ОТВЕТ #1 -->
+  <div id="faq1Screen" class="screen answer-screen">
+    <div>
+      <div class="instruction-line">
+Чтобы подключиться к VPN, необходимо установить на свое устройство приложение-клиент.
+      </div>
+      <div class="instruction-line">
+Зайдите в раздел «Инструкция» бота и выберите нужное устройство. После этого получите ссылку на скачивание и установите приложение.
+      </div>
+      <div class="instruction-line">
+После того как получите ключ в боте (оформив подписку), вставьте его в приложение-клиент.
+      </div>
+      <div class="instruction-line">
+Теперь вы подключены к VPN!
+      </div>
+    </div>
+  </div>
+
+  <!-- ОТВЕТ #2 -->
+  <div id="faq2Screen" class="screen answer-screen">
+    <div>
+      <div class="instruction-line">
+Пригласите своего друга, чтобы вы и ваш друг получили 2 недели бесплатного пользования VPN.
+      </div>
+      <div class="instruction-line">
+Подробные условия в разделе «Реферальная программа».
+      </div>
+    </div>
+  </div>
+
+  <!-- ОТВЕТ #3 -->
+  <div id="faq3Screen" class="screen answer-screen">
+    <div>
+      <div class="instruction-line">
+Сервис <b>ShmoneyVPN</b> использует самый защищенный протокол передачи данных, блокировок которого не было еще ни в одной из стран.
+      </div>
+      <div class="instruction-line">
+Если этот протокол когда-нибудь начнут блокировать, к тому времени уже появится более современная версия, которая будет в разы лучше прежней.
+      </div>
+    </div>
+  </div>
+
+  <!-- ОТВЕТ #4 -->
+  <div id="faq4Screen" class="screen answer-screen">
+    <div>
+      <div class="instruction-line">
+Для этого необходимо перейти в раздел «Подписка» в боте и следовать дальнейшим инструкциям.
+      </div>
+    </div>
+  </div>
+
+  <!-- ОТВЕТ #5 -->
+  <div id="faq5Screen" class="screen answer-screen">
+    <div>
+      <div class="instruction-line">
+Чтобы вернуть деньги, напишите в 
+<a href="https://t.me/ShmoneySupport">поддержку ShmoneyVPN</a>.
+      </div>
+      <div class="instruction-line">
+Мы всегда рады помочь вам по любым вопросам!
+      </div>
+    </div>
+  </div>
+
+</div><!-- /#appWrapper -->
+
+<script>
+  // ===== ЛОГИКА ЗАГРУЗЧИКА =====
+  const randomTime = Math.floor(Math.random() * (4000 - 2000 + 1)) + 2000;
+  const loader = document.getElementById('loader');
+  setTimeout(() => {
+    loader.style.opacity = '0';
+    setTimeout(() => {
+      loader.style.display = 'none';
+      // показать список вопросов
+      faqMainScreen.classList.add('active');
+    }, 400);
+  }, randomTime);
+
+  // ===== ПЕРЕМЕННЫЕ ЭКРАНОВ =====
+  const faqMainScreen = document.getElementById('faqMainScreen');
+  const faq1Screen    = document.getElementById('faq1Screen');
+  const faq2Screen    = document.getElementById('faq2Screen');
+  const faq3Screen    = document.getElementById('faq3Screen');
+  const faq4Screen    = document.getElementById('faq4Screen');
+  const faq5Screen    = document.getElementById('faq5Screen');
+
+  // Соберём их в массив, чтобы прятать скопом
+  const answerScreens = [faq1Screen, faq2Screen, faq3Screen, faq4Screen, faq5Screen];
+
+  function showScreen(screen) {
+    screen.classList.add('active');
+    updateBackButtonVisibility();
+  }
+  function hideScreen(screen) {
+    screen.classList.remove('active');
+    updateBackButtonVisibility();
+  }
+  function hideAllAnswerScreens() {
+    answerScreens.forEach(s => s.classList.remove('active'));
+  }
+
+  // ===== Telegram WebApp + кнопка «Назад» =====
+  Telegram.WebApp.ready();
+
+  function updateBackButtonVisibility() {
+    if (faqMainScreen.classList.contains('active')) {
+      // на главном экране FAQ - скрыть кнопку "Назад"
+      Telegram.WebApp.BackButton.hide();
+    } else {
+      // на экране ответа - показать кнопку "Назад"
+      Telegram.WebApp.BackButton.show();
+    }
+  }
+  updateBackButtonVisibility(); // при загрузке
+
+  Telegram.WebApp.BackButton.onClick(() => {
+    // Если открыт какой-то экран ответа - прячем его, показываем главный
+    for (let scr of answerScreens) {
+      if (scr.classList.contains('active')) {
+        hideScreen(scr);
+        showScreen(faqMainScreen);
+        return;
+      }
+    }
+  });
+
+  // ===== КЛИК ПО ВОПРОСУ =====
+  const faqButtons = document.querySelectorAll('.faq-button[data-faq]');
+  faqButtons.forEach(btn => {
+    btn.addEventListener('click', (ev) => {
+      ev.preventDefault();
+      const faqIndex = btn.getAttribute('data-faq');
+      // Скрыть список, спрятать все ответы
+      hideScreen(faqMainScreen);
+      hideAllAnswerScreens();
+
+      // Показать нужный
+      switch (faqIndex) {
+        case "1": showScreen(faq1Screen); break;
+        case "2": showScreen(faq2Screen); break;
+        case "3": showScreen(faq3Screen); break;
+        case "4": showScreen(faq4Screen); break;
+        case "5": showScreen(faq5Screen); break;
+      }
+    });
+  });
+</script>
+</body>
+</html>
