@@ -34,7 +34,7 @@
       font-style: normal;
     }
 
-    /* СБРОС */
+    /* Сброс */
     * {
       margin: 0; padding: 0; box-sizing: border-box;
     }
@@ -47,7 +47,7 @@
       overflow: hidden; /* исключаем прокрутку */
     }
 
-    /* ЗАГРУЗОЧНЫЙ ЭКРАН */
+    /* Загрузочный экран */
     #loader {
       position: absolute; top: 0; left: 0;
       width: 100%; height: 100%;
@@ -61,44 +61,39 @@
       max-width: 200px; width: auto; height: auto;
     }
 
-    /* КОНТЕЙНЕР ВСЕХ ЭКРАНОВ */
+    /* Контейнер всех экранов */
     #appWrapper {
-      position: relative;
-      width: 100%; height: 100%;
+      position: relative; width: 100%; height: 100%;
     }
 
-    /* ВАЖНО: изначально принудительно скрываем все .screen */
+    /* Скрыто до .active */
     .screen {
-      position: absolute;
-      top: 0; left: 0;
+      position: absolute; top: 0; left: 0;
       width: 100%; height: 100%;
       display: none !important; /* скрыто до .active */
       box-sizing: border-box;
     }
     .screen.active {
-      display: flex !important; /* показываем только при .active */
+      display: flex !important;
     }
 
-    /* ГЛАВНЫЙ ЭКРАН (СПИСОК ВОПРОСОВ) */
+    /* Главный экран (список вопросов) */
     #faqMainScreen {
-      justify-content: center;
-      align-items: center;
+      justify-content: center; align-items: center;
     }
     .inner-container {
-      width: 100%; margin: 0; padding: 0; text-align: left;
+      width: 100%; margin: 0; padding: 0;
+      text-align: left;
     }
     .inner-container h1 {
-      font-size: 20px;
-      font-weight: 50;
-      color: #0E7AFE;
-      margin-bottom: 16px;
-      padding: 0 12px;
+      font-size: 20px; font-weight: 50; color: #0E7AFE;
+      margin-bottom: 16px; padding: 0 12px;
     }
     .buttons-container {
       width: 100%; display: flex; flex-direction: column; gap: 8px;
     }
 
-    /* КНОПКИ-ВОПРОСОВ */
+    /* Кнопки вопросов */
     .faq-button {
       font-size: 19px; font-family: 'SF-Pro-Display-Regular';
       display: flex; align-items: center; justify-content: space-between;
@@ -114,14 +109,28 @@
     .faq-left {
       display: flex; align-items: center; gap: 16px;
     }
+
+    /* Цветные фоны - фиксированные для каждой иконки */
+    .connect-bg { background-color: #00c4cc; }
+    .free-bg    { background-color: white; }
+    .noentry-bg { background-color: white; }
+    .card-bg    { background-color: orange; }
+    .refund-bg  { background-color: rgb(25, 225, 25);    }
+
+    /* Блок под иконку (30×30), скруглён */
     .faq-icon-wrap {
       width: 30px; height: 30px; border-radius: 6px;
       display: flex; align-items: center; justify-content: center;
-      background-color: #3a3a3c;
+      overflow: hidden;
     }
-    .faq-icon-wrap img {
-      width: 18px; height: 18px;
-    }
+
+    /* Разные размеры для каждой иконки */
+    .connect-icon { width: 20px; height: 20px; }
+    .free-icon    { width: 32px; height: 32px; }
+    .noentry-icon { width: 25px; height: 25px; }
+    .card-icon    { width: 25px; height: 25px; }
+    .refund-icon  { width: 25px; height: 25px; }
+
     .arrow-icon {
       width: 11px; height: 13px; margin-right: 12px;
     }
@@ -130,36 +139,28 @@
       stroke-linecap: round; stroke-linejoin: round;
     }
 
-    /* ЭКРАНЫ ОТВЕТОВ */
+    /* Экраны с ответами */
     .answer-screen {
-      display: flex; /* скрыто до .active */
+      display: flex; 
       width: 100%; height: 100%;
-      justify-content: center;  /* по центру по горизонтали */
-      align-items: center;      /* по центру по вертикали, если мало текста */
-      overflow-y: auto;         /* если много текста - прокрутка */
+      justify-content: center; align-items: center;
+      overflow-y: auto; 
       text-align: left;
-      padding: 16px;
-      box-sizing: border-box;
+      padding: 16px; box-sizing: border-box;
     }
 
-    /* Абзац: первая строка белая, остальные серые */
+    /* Абзацы ответа: первая строка белая, остальное серое */
     .instruction-line {
-      display: block;
-      color: #888;
-      margin: 12px 0;
-      font-size: 20px;
-      line-height: 1.4;
-      width: 100%;
-      max-width: 500px;
+      display: block; color: #888; margin: 12px 0;
+      font-size: 20px; line-height: 1.4;
+      width: 100%; max-width: 500px;
       white-space: normal;
     }
     .instruction-line::first-line {
-      color: #fff; /* первая строка - белая */
+      color: #fff;
     }
     .instruction-line a {
-      color: #0E7AFE;
-      text-decoration: underline;
-      word-break: break-all;
+      color: #0E7AFE; text-decoration: underline; word-break: break-all;
     }
     .instruction-line b,
     .instruction-line strong {
@@ -168,82 +169,86 @@
   </style>
 </head>
 <body>
-<!-- ЗАГРУЗОЧНЫЙ ЭКРАН -->
+<!-- Загрузочный экран -->
 <div id="loader">
   <img src="Cloud With Lightning.webp" alt="Loading...">
 </div>
 
 <div id="appWrapper">
-  <!-- ГЛАВНЫЙ ЭКРАН (список) -->
+  <!-- Главный экран (список вопросов) -->
   <div id="faqMainScreen" class="screen">
     <div class="inner-container">
       <h1>Часто задаваемые вопросы</h1>
       <div class="buttons-container">
-        <!-- Вопрос 1 -->
+        <!-- Вопрос #1 -->
         <a href="#" class="faq-button" data-faq="1">
           <div class="faq-left">
-            <div class="faq-icon-wrap">
-              <img src="https://www.svgrepo.com/show/374265/question.svg" alt="?" />
+            <div class="faq-icon-wrap connect-bg">
+              <img src="https://www.svgrepo.com/show/521578/connect.svg" alt="connect" class="connect-icon">
             </div>
             <span>Как подключиться к VPN?</span>
           </div>
-          <svg class="arrow-icon" viewBox="0 0 6 8" xmlns="http://www.w3.org/2000/svg">
-            <path d="M1 1 L5 4 L1 7" />
+          <svg class="arrow-icon" viewBox="0 0 6 8">
+            <path d="M1 1 L5 4 L1 7"/>
           </svg>
         </a>
-        <!-- Вопрос 2 -->
+
+        <!-- Вопрос #2 -->
         <a href="#" class="faq-button" data-faq="2">
           <div class="faq-left">
-            <div class="faq-icon-wrap">
-              <img src="https://www.svgrepo.com/show/374265/question.svg" alt="?" />
+            <div class="faq-icon-wrap free-bg">
+              <img src="https://www.svgrepo.com/show/403584/free-button.svg" alt="free" class="free-icon">
             </div>
             <span>Есть ли бесплатный тариф?</span>
           </div>
-          <svg class="arrow-icon" viewBox="0 0 6 8" xmlns="http://www.w3.org/2000/svg">
-            <path d="M1 1 L5 4 L1 7" />
+          <svg class="arrow-icon" viewBox="0 0 6 8">
+            <path d="M1 1 L5 4 L1 7"/>
           </svg>
         </a>
-        <!-- Вопрос 3 -->
+
+        <!-- Вопрос #3 -->
         <a href="#" class="faq-button" data-faq="3">
           <div class="faq-left">
-            <div class="faq-icon-wrap">
-              <img src="https://www.svgrepo.com/show/374265/question.svg" alt="?" />
+            <div class="faq-icon-wrap noentry-bg">
+              <img src="https://www.svgrepo.com/show/509530/no-entry.svg" alt="no-entry" class="noentry-icon">
             </div>
             <span>VPN не заблокируют?</span>
           </div>
-          <svg class="arrow-icon" viewBox="0 0 6 8" xmlns="http://www.w3.org/2000/svg">
-            <path d="M1 1 L5 4 L1 7" />
+          <svg class="arrow-icon" viewBox="0 0 6 8">
+            <path d="M1 1 L5 4 L1 7"/>
           </svg>
         </a>
-        <!-- Вопрос 4 -->
+
+        <!-- Вопрос #4 -->
         <a href="#" class="faq-button" data-faq="4">
           <div class="faq-left">
-            <div class="faq-icon-wrap">
-              <img src="https://www.svgrepo.com/show/374265/question.svg" alt="?" />
+            <div class="faq-icon-wrap card-bg">
+              <img src="https://www.svgrepo.com/show/452179/card.svg" alt="payment" class="card-icon">
             </div>
             <span>Как оплатить подписку?</span>
           </div>
-          <svg class="arrow-icon" viewBox="0 0 6 8" xmlns="http://www.w3.org/2000/svg">
-            <path d="M1 1 L5 4 L1 7" />
+          <svg class="arrow-icon" viewBox="0 0 6 8">
+            <path d="M1 1 L5 4 L1 7"/>
           </svg>
         </a>
-        <!-- Вопрос 5 -->
+
+        <!-- Вопрос #5 -->
         <a href="#" class="faq-button" data-faq="5">
           <div class="faq-left">
-            <div class="faq-icon-wrap">
-              <img src="https://www.svgrepo.com/show/374265/question.svg" alt="?" />
+            <div class="faq-icon-wrap refund-bg">
+              <img src="https://www.svgrepo.com/show/347334/refund-2.svg" alt="refund" class="refund-icon">
             </div>
             <span>Как вернуть деньги?</span>
           </div>
-          <svg class="arrow-icon" viewBox="0 0 6 8" xmlns="http://www.w3.org/2000/svg">
-            <path d="M1 1 L5 4 L1 7" />
+          <svg class="arrow-icon" viewBox="0 0 6 8">
+            <path d="M1 1 L5 4 L1 7"/>
           </svg>
         </a>
       </div><!-- /.buttons-container -->
     </div><!-- /.inner-container -->
   </div><!-- /#faqMainScreen -->
 
-  <!-- ОТВЕТ #1 -->
+  <!-- Ответ #1 -->
   <div id="faq1Screen" class="screen answer-screen">
     <div>
       <div class="instruction-line">
@@ -261,7 +266,7 @@
     </div>
   </div>
 
-  <!-- ОТВЕТ #2 -->
+  <!-- Ответ #2 -->
   <div id="faq2Screen" class="screen answer-screen">
     <div>
       <div class="instruction-line">
@@ -273,7 +278,7 @@
     </div>
   </div>
 
-  <!-- ОТВЕТ #3 -->
+  <!-- Ответ #3 -->
   <div id="faq3Screen" class="screen answer-screen">
     <div>
       <div class="instruction-line">
@@ -285,7 +290,7 @@
     </div>
   </div>
 
-  <!-- ОТВЕТ #4 -->
+  <!-- Ответ #4 -->
   <div id="faq4Screen" class="screen answer-screen">
     <div>
       <div class="instruction-line">
@@ -294,7 +299,7 @@
     </div>
   </div>
 
-  <!-- ОТВЕТ #5 -->
+  <!-- Ответ #5 -->
   <div id="faq5Screen" class="screen answer-screen">
     <div>
       <div class="instruction-line">
@@ -316,31 +321,28 @@
     loader.style.opacity = '0';
     setTimeout(() => {
       loader.style.display = 'none';
-      // показать список вопросов
       faqMainScreen.classList.add('active');
-      // Сразу при первом показе: сделать кнопку "Закрыть"
       setupCloseMode();
     }, 400);
   }, randomTime);
 
   // ===== ПЕРЕМЕННЫЕ ЭКРАНОВ =====
   const faqMainScreen = document.getElementById('faqMainScreen');
-  const faq1Screen = document.getElementById('faq1Screen');
-  const faq2Screen = document.getElementById('faq2Screen');
-  const faq3Screen = document.getElementById('faq3Screen');
-  const faq4Screen = document.getElementById('faq4Screen');
-  const faq5Screen = document.getElementById('faq5Screen');
+  const faq1Screen    = document.getElementById('faq1Screen');
+  const faq2Screen    = document.getElementById('faq2Screen');
+  const faq3Screen    = document.getElementById('faq3Screen');
+  const faq4Screen    = document.getElementById('faq4Screen');
+  const faq5Screen    = document.getElementById('faq5Screen');
 
   const answerScreens = [faq1Screen, faq2Screen, faq3Screen, faq4Screen, faq5Screen];
 
-  // ===== ТЕЛЕГРАМ WEBAPP =====
+  // ===== Telegram WebApp ready =====
   Telegram.WebApp.ready();
 
   // Режим "Закрыть" (на главном экране)
   function setupCloseMode() {
     Telegram.WebApp.BackButton.setText("Закрыть");
     Telegram.WebApp.BackButton.show();
-    // При нажатии — закрываем
     Telegram.WebApp.BackButton.onClick(() => {
       Telegram.WebApp.close();
     });
@@ -356,7 +358,6 @@
         if (scr.classList.contains('active')) {
           scr.classList.remove('active');
           faqMainScreen.classList.add('active');
-          // Теперь снова "Закрыть"
           setupCloseMode();
           return;
         }
@@ -364,19 +365,18 @@
     });
   }
 
-  // ===== КЛИКИ ПО ВОПРОСАМ =====
+  // ===== КЛИК ПО ВОПРОСАМ =====
   const faqButtons = document.querySelectorAll('.faq-button[data-faq]');
   faqButtons.forEach(btn => {
-    btn.addEventListener('click', (ev) => {
+    btn.addEventListener('click', ev => {
       ev.preventDefault();
       const faqIndex = btn.getAttribute('data-faq');
 
-      // Переходим с главного экрана на ответ
+      // Прячем список, прячем все экраны ответов
       faqMainScreen.classList.remove('active');
-      // прячем все ответы
       answerScreens.forEach(s => s.classList.remove('active'));
 
-      // Показать нужный экран
+      // Показываем нужный
       switch (faqIndex) {
         case "1": faq1Screen.classList.add('active'); break;
         case "2": faq2Screen.classList.add('active'); break;
@@ -385,7 +385,6 @@
         case "5": faq5Screen.classList.add('active'); break;
       }
 
-      // Теперь на экране ответа — кнопка "Назад"
       setupBackMode();
     });
   });
