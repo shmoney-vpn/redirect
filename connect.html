@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <title>ShmoneyVPN - Установка</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
+    @font-face {
+      font-family: 'SF-Pro-Display-Regular';
+      src: url('SF-Pro-Display-Regular.otf') format('opentype');
+      font-weight: 100;
+      font-style: normal;
+    }
+
+    /* СБРОС */
+    * {
+      margin: 0; 
+      padding: 0; 
+      box-sizing: border-box;
+    }
+    html, body {
+      width: 100%; height: 100%;
+      background: #000;
+      font-family: 'SF-Pro-Display-Regular', 'Roboto', sans-serif;
+      overflow: hidden;
+      color: #fff;
+    }
+
+    /* Лоадер (при необходимости) */
+    #loader {
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: #000;
+      display: flex; justify-content: center; align-items: center;
+      z-index: 9999;
+      opacity: 1;
+      transition: opacity 0.4s ease;
+    }
+    #loader img {
+      max-width: 200px; width: auto; height: auto;
+    }
+
+    /* FLEX разметка:
+       - .page-wrapper (колонка)
+       - .header (вверху)
+       - .center-content (по центру оставшегося места)
+    */
+    .page-wrapper {
+      display: flex;
+      flex-direction: column;
+      width: 100%; height: 100%;
+    }
+    .header {
+      width: 100%;
+      padding: 16px 0;
+      text-align: center;
+    }
+    .logo-text {
+      font-size: 38px;
+      font-weight: 700;
+      color: rgb(228, 161, 36);
+      text-shadow: 1px 1px 3px rgba(0,0,0,0.5);
+    }
+
+    .center-content {
+      flex: 1; 
+      display: flex; 
+      flex-direction: column;
+      align-items: center; 
+      justify-content: center;
+      text-align: center;
+      margin-top: -50px;
+    }
+
+    /* Картинка (изначально voltage.webp) */
+    #mainImage {
+      max-width: 270px;
+      cursor: pointer;
+      transition: opacity 0.3s ease;
+    }
+    #mainImage:hover {
+      opacity: 0.8;
+    }
+
+    /* 
+      Анимация «помигивания» (brightness).
+      Можно вместо brightness использовать opacity/scale и т.д.
+    */
+    @keyframes imageBlink {
+      0%   { filter: brightness(1); }
+      50%  { filter: brightness(0.7); }
+      100% { filter: brightness(1); }
+    }
+    /* Применяем для начального изображения */
+    .image-blink {
+      animation: imageBlink 2s infinite;
+    }
+
+    /* Контейнер под текст (фикс. высота => не скачет при смене) */
+    .text-container {
+      margin-top: 40px;
+      min-height: 32px;
+      display: flex; 
+      align-items: center; 
+      justify-content: center;
+    }
+
+    /* Изначально “Нажмите, чтобы подключиться” (белый <-> серый) */
+    .hint-text {
+      font-size: 23px;
+      animation: textBlink 2s infinite;
+    }
+    @keyframes textBlink {
+      0%   { color: #fff; }
+      50%  { color: #888; }
+      100% { color: #fff; }
+    }
+
+    /* “Вы подключены!” (зелёное мигание) */
+    @keyframes textBlinkGreen {
+      0%   { color: lime; }
+      50%  { color: #88ff88; }
+      100% { color: lime; }
+    }
+    .connected-text {
+      font-size: 23px;
+      animation: textBlinkGreen 1.2s infinite;
+    }
+  </style>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", function(){
+
+      // Функция возврата
+      function revertToInitial() {
+        mainImage.src = "voltage.webp";
+        mainImage.classList.add("image-blink"); 
+        statusText.textContent = "Нажмите, чтобы подключиться";
+        statusText.className = "hint-text";
+        isAnimating = false;
+      }
+
+      // Считываем ?url=...
+      const params = new URLSearchParams(window.location.search);
+      const appUrl = params.get('url'); 
+
+      // Ссылки
+      const loader     = document.getElementById("loader");
+      const mainImage  = document.getElementById("mainImage");
+      const statusText = document.getElementById("statusText");
+
+      // Лоадер (пример: 1с)
+      setTimeout(() => {
+        loader.style.opacity = '0';
+        setTimeout(() => {
+          loader.style.display = 'none';
+        }, 400);
+      }, 1000);
+
+      let isAnimating = false; 
+
+      // Изначально картинка мигает
+      mainImage.classList.add("image-blink"); 
+
+      mainImage.addEventListener("click", () => {
+        if(isAnimating) return;
+        isAnimating = true;
+
+        // Меняем -> High Voltage.webp
+        mainImage.classList.remove("image-blink");
+        mainImage.src = "High Voltage.webp";
+
+        // Прячем “Нажмите...”
+        statusText.style.display = "none";
+
+        // Через 2с -> “Вы подключены!”
+        setTimeout(() => {
+          statusText.textContent = "Вы подключены!";
+          statusText.className = "connected-text";
+          statusText.style.display = "block";
+
+          // Через 1с -> редирект/откат
+          setTimeout(() => {
+            if (appUrl) {
+              alert("Переходим на: " + appUrl);
+              window.location.href = appUrl;
+
+              // Если редирект не сработал, вернёмся через 2с
+              setTimeout(() => {
+                revertToInitial();
+              }, 2000);
+
+            } else {
+              // Нет URL => ошибка + откат
+              alert("Параметр ?url= не задан. Редирект невозможен.");
+              revertToInitial();
+            }
+          }, 1000);
+
+        }, 2000);
+      });
+    });
+  </script>
+</head>
+<body>
+  <!-- Лоадер (Cloud With Lightning.webp) -->
+  <div id="loader">
+    <img src="Cloud With Lightning.webp" alt="Loading...">
+  </div>
+
+  <div class="page-wrapper">
+    <!-- Верхняя шапка -->
+    <div class="header">
+      <div class="logo-text">ShmoneyVPN</div>
+    </div>
+
+    <!-- Центр -->
+    <div class="center-content">
+      <img 
+        id="mainImage"
+        src="voltage.webp"
+        alt="Voltage"
+      />
+
+      <!-- Контейнер под текст -->
+      <div class="text-container">
+        <div id="statusText" class="hint-text">
+          Нажмите, чтобы подключиться
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
