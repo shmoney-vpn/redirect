@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0">
   <title>FAQ - ShmoneyVPN</title>
 
   <!-- Скрипт Telegram WebApp -->
@@ -36,15 +36,11 @@
 
     /* СБРОС */
     * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
+      margin: 0; padding: 0; box-sizing: border-box;
     }
     html, body {
-      width: 100%;
-      height: 100%;
-      background: #000;
-      color: #fff;
+      width: 100%; height: 100%;
+      background: #000; color: #fff;
       font-family: 'SF-Pro-Display-Regular', -apple-system,
                    BlinkMacSystemFont, "Segoe UI", Roboto,
                    "Helvetica Neue", Arial, sans-serif;
@@ -65,41 +61,40 @@
       max-width: 200px; width: auto; height: auto;
     }
 
-    /* КОНТЕЙНЕР ДЛЯ ВСЕХ ЭКРАНОВ */
+    /* Контейнер всех экранов */
     #appWrapper {
       position: relative; width: 100%; height: 100%;
     }
 
-    /* Изначально ВСЕ экраны скрыты, до .active */
+    /* Изначально скрываем все экраны (до .active) */
     .screen {
       position: absolute; top: 0; left: 0;
       width: 100%; height: 100%;
-      display: none !important; /* !important, чтобы точно скрывать */
+      display: none !important; /* важнее всего */
       box-sizing: border-box;
     }
     .screen.active {
       display: flex !important;
     }
 
-    /* ГЛАВНЫЙ ЭКРАН (СПИСОК ВОПРОСОВ) */
+    /* Главный экран (список вопросов) */
     #faqMainScreen {
       justify-content: center; align-items: center;
     }
     .inner-container {
-      width: 100%; margin: 0; padding: 0; text-align: left;
+      width: 100%; text-align: left;
     }
     .inner-container h1 {
-      font-size: 20px; font-weight: 50; color: #0E7AFE;
+      font-size: 20px; color: #0E7AFE; font-weight: 50;
       margin-bottom: 16px; padding: 0 12px;
     }
     .buttons-container {
       width: 100%; display: flex; flex-direction: column; gap: 8px;
     }
 
-    /* КНОПКИ ВОПРОСОВ */
+    /* Кнопки вопросов */
     .faq-button {
-      font-size: 19px;
-      font-family: 'SF-Pro-Display-Regular';
+      font-size: 19px; font-family: 'SF-Pro-Display-Regular';
       display: flex; align-items: center; justify-content: space-between;
       background-color: #2c2c2e;
       border-radius: 8px;
@@ -114,11 +109,11 @@
       display: flex; align-items: center; gap: 16px;
     }
 
-    /* --------- Цветные фоны и размеры иконок FAQ -------- */
+    /* Пример цветных фонов и размеров (по желанию) */
     .connect-bg { background-color: #00c4cc; }
-    .free-bg    { background-color: white;   }
-    .noentry-bg { background-color: white;   }
-    .card-bg    { background-color: orange;  }
+    .free-bg    { background-color: white; }
+    .noentry-bg { background-color: white; }
+    .card-bg    { background-color: orange; }
     .refund-bg  { background-color: rgb(25, 225, 25); }
 
     .faq-icon-wrap {
@@ -141,7 +136,7 @@
       stroke-linecap: round; stroke-linejoin: round;
     }
 
-    /* ЭКРАНЫ ОТВЕТОВ */
+    /* Экраны ответа */
     .answer-screen {
       display: flex; 
       width: 100%; height: 100%;
@@ -151,15 +146,14 @@
       padding: 16px; box-sizing: border-box;
     }
 
-    /* Абзацы ответа: первая строка белая, остальные строки серые */
+    /* Абзацы ответа */
     .instruction-line {
-      display: block; color: #888; margin: 12px 0;
-      font-size: 20px; line-height: 1.4;
-      width: 100%; max-width: 500px;
-      white-space: normal;
+      display: block; margin: 12px 0;
+      color: #888; font-size: 20px; line-height: 1.4;
+      width: 100%; max-width: 500px; white-space: normal;
     }
     .instruction-line::first-line {
-      color: #fff; /* первая строка белая */
+      color: #fff; /* первая строка – белая */
     }
     .instruction-line a {
       color: #0E7AFE; text-decoration: underline; word-break: break-all;
@@ -171,22 +165,27 @@
   </style>
 </head>
 <body>
-<!-- ЗАГРУЗЧИК -->
+
+<!-- Загрузочный экран -->
 <div id="loader">
   <img src="Cloud With Lightning.webp" alt="Loading...">
 </div>
 
 <div id="appWrapper">
-  <!-- ГЛАВНЫЙ ЭКРАН -->
+  <!-- Экран со списком -->
   <div id="faqMainScreen" class="screen">
     <div class="inner-container">
       <h1>Часто задаваемые вопросы</h1>
       <div class="buttons-container">
-        <!-- 1 -->
+        <!-- Вопрос 1 -->
         <a href="#" class="faq-button" data-faq="1">
           <div class="faq-left">
             <div class="faq-icon-wrap connect-bg">
-              <img src="https://www.svgrepo.com/show/521578/connect.svg" alt="connect" class="connect-icon">
+              <img 
+                src="https://www.svgrepo.com/show/521578/connect.svg"
+                alt="connect"
+                class="connect-icon"
+              >
             </div>
             <span>Как подключиться к VPN?</span>
           </div>
@@ -194,12 +193,15 @@
             <path d="M1 1 L5 4 L1 7"/>
           </svg>
         </a>
-
-        <!-- 2 -->
+        <!-- Вопрос 2 -->
         <a href="#" class="faq-button" data-faq="2">
           <div class="faq-left">
             <div class="faq-icon-wrap free-bg">
-              <img src="https://www.svgrepo.com/show/403584/free-button.svg" alt="free" class="free-icon">
+              <img 
+                src="https://www.svgrepo.com/show/403584/free-button.svg"
+                alt="free"
+                class="free-icon"
+              >
             </div>
             <span>Есть ли бесплатный тариф?</span>
           </div>
@@ -207,12 +209,15 @@
             <path d="M1 1 L5 4 L1 7"/>
           </svg>
         </a>
-
-        <!-- 3 -->
+        <!-- Вопрос 3 -->
         <a href="#" class="faq-button" data-faq="3">
           <div class="faq-left">
             <div class="faq-icon-wrap noentry-bg">
-              <img src="https://www.svgrepo.com/show/509530/no-entry.svg" alt="no-entry" class="noentry-icon">
+              <img 
+                src="https://www.svgrepo.com/show/509530/no-entry.svg"
+                alt="no-entry"
+                class="noentry-icon"
+              >
             </div>
             <span>VPN не заблокируют?</span>
           </div>
@@ -220,12 +225,15 @@
             <path d="M1 1 L5 4 L1 7"/>
           </svg>
         </a>
-
-        <!-- 4 -->
+        <!-- Вопрос 4 -->
         <a href="#" class="faq-button" data-faq="4">
           <div class="faq-left">
             <div class="faq-icon-wrap card-bg">
-              <img src="https://www.svgrepo.com/show/452179/card.svg" alt="payment" class="card-icon">
+              <img 
+                src="https://www.svgrepo.com/show/452179/card.svg"
+                alt="payment"
+                class="card-icon"
+              >
             </div>
             <span>Как оплатить подписку?</span>
           </div>
@@ -233,12 +241,15 @@
             <path d="M1 1 L5 4 L1 7"/>
           </svg>
         </a>
-
-        <!-- 5 -->
+        <!-- Вопрос 5 -->
         <a href="#" class="faq-button" data-faq="5">
           <div class="faq-left">
             <div class="faq-icon-wrap refund-bg">
-              <img src="https://www.svgrepo.com/show/347334/refund-2.svg" alt="refund" class="refund-icon">
+              <img 
+                src="https://www.svgrepo.com/show/347334/refund-2.svg"
+                alt="refund"
+                class="refund-icon"
+              >
             </div>
             <span>Как вернуть деньги?</span>
           </div>
@@ -316,17 +327,19 @@
 </div><!-- /#appWrapper -->
 
 <script>
-  // ===== ЛОГИКА ЗАГРУЗЧИКА (2-4 секунды) =====
+  // ===== ЛОГИКА ЗАГРУЗЧИКА =====
   const randomTime = Math.floor(Math.random() * (4000 - 2000 + 1)) + 2000;
   const loader = document.getElementById('loader');
+  
   setTimeout(() => {
+    // Лёгкая анимация прозрачности
     loader.style.opacity = '0';
     setTimeout(() => {
       loader.style.display = 'none';
-      // Показываем главный экран (список вопросов)
+      // Показываем главный экран (список)
       faqMainScreen.classList.add('active');
-      // Кнопка: "Закрыть" (для главного экрана)
-      setupCloseMode();
+      // Скрываем кнопку Telegram (нет "Назад", нет "Закрыть" по умолчанию)
+      Telegram.WebApp.BackButton.hide();
     }, 400);
   }, randomTime);
 
@@ -337,54 +350,42 @@
   const faq3Screen    = document.getElementById('faq3Screen');
   const faq4Screen    = document.getElementById('faq4Screen');
   const faq5Screen    = document.getElementById('faq5Screen');
+  
   const answerScreens = [faq1Screen, faq2Screen, faq3Screen, faq4Screen, faq5Screen];
 
   // ===== Telegram WebApp READY =====
   Telegram.WebApp.ready();
 
-  // ----- КНОПКА "ЗАКРЫТЬ" (Главный экран) -----
-  function setupCloseMode() {
-    // Меняем текст кнопки
-    //Telegram.WebApp.BackButton.setText("Закрыть");
-    // Показываем кнопку
+  // Показать кнопку "Назад"
+  function showBackButton() {
+    // Просто покажем, без setText
     Telegram.WebApp.BackButton.show();
-    // При клике — закрываем WebApp
+    // Навешиваем onClick
     Telegram.WebApp.BackButton.onClick(() => {
-      Telegram.WebApp.close();
+      // При нажатии: скрываем ответ, показываем список, скрываем кнопку
+      hideAllAnswerScreens();
+      faqMainScreen.classList.add('active');
+      Telegram.WebApp.BackButton.hide();
     });
   }
-
-  // ----- КНОПКА "НАЗАД" (Экраны ответов) -----
-  function setupBackMode() {
-    // Меняем текст кнопки
-    //Telegram.WebApp.BackButton.setText("Назад");
-    // Показываем кнопку
-    Telegram.WebApp.BackButton.show();
-    // При клике — прячем ответ, показываем список, ставим обратно "Закрыть"
-    Telegram.WebApp.BackButton.onClick(() => {
-      for (let scr of answerScreens) {
-        if (scr.classList.contains('active')) {
-          scr.classList.remove('active');
-          faqMainScreen.classList.add('active');
-          setupCloseMode();
-          return;
-        }
-      }
-    });
+  
+  // Спрятать все ответные экраны
+  function hideAllAnswerScreens() {
+    answerScreens.forEach(scr => scr.classList.remove('active'));
   }
 
-  // ===== КЛИКИ ПО ВОПРОСАМ =====
+  // ===== КЛИК ПО ВОПРОСУ =====
   const faqButtons = document.querySelectorAll('.faq-button[data-faq]');
   faqButtons.forEach(btn => {
-    btn.addEventListener('click', (ev) => {
-      ev.preventDefault();
+    btn.addEventListener('click', event => {
+      event.preventDefault();
       const faqIndex = btn.getAttribute('data-faq');
-
-      // Прячем список, прячем все экраны с ответами
+      
+      // Скрываем список, скрываем все ответы
       faqMainScreen.classList.remove('active');
-      answerScreens.forEach(scr => scr.classList.remove('active'));
+      hideAllAnswerScreens();
 
-      // Показываем нужный
+      // Показываем нужный ответ
       switch (faqIndex) {
         case "1": faq1Screen.classList.add('active'); break;
         case "2": faq2Screen.classList.add('active'); break;
@@ -392,9 +393,9 @@
         case "4": faq4Screen.classList.add('active'); break;
         case "5": faq5Screen.classList.add('active'); break;
       }
-
-      // Теперь кнопка "Назад"
-      setupBackMode();
+      
+      // Теперь при нажатии Telegram-кнопки — вернёмся к списку
+      showBackButton();
     });
   });
 </script>
