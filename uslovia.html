@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0">
+  <title>Условия использования - ShmoneyVPN</title>
+
+  <!-- Скрипт Telegram WebApp -->
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+
+  <style>
+    /* Подключение шрифтов */
+    @font-face {
+      font-family: 'SF-Pro-Display-Regular';
+      src: url('SF-Pro-Display-Regular.otf') format('opentype');
+      font-weight: normal;
+      font-style: normal;
+    }
+    @font-face {
+      font-family: 'SF-Pro-Display-Bold';
+      src: url('SF-Pro-Display-Bold.otf') format('opentype');
+      font-weight: bold;
+      font-style: normal;
+    }
+
+    /* Сброс стилей */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    html, body {
+      width: 100%;
+      min-height: 100%;
+      background: #000;
+      color: #fff;
+      font-family: 'SF-Pro-Display-Regular', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      overflow-y: auto;
+    }
+    a {
+      color: #0E7AFE;
+      text-decoration: none;
+    }
+    a:hover {
+      text-decoration: underline;
+    }
+
+    /* Загрузочный экран */
+    #loader {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: #000;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 9999;
+      opacity: 1;
+      transition: opacity 0.4s ease;
+    }
+    #loader img {
+      max-width: 200px;
+      width: auto;
+      height: auto;
+    }
+
+    /* Контейнер приложения */
+    #appWrapper {
+      position: relative;
+      width: 100%;
+      padding: 20px;
+    }
+
+    /* Логотип */
+    .logo-container {
+      display: flex;
+      justify-content: center;
+      margin-top: -55px;
+      margin-bottom: -20px;
+    }
+    .logo-container img {
+      max-width: 280px;
+      width: auto;
+      height: auto;
+    }
+
+    /* Основной контейнер контента */
+    .content-container {
+      max-width: 800px;
+      margin: 0 auto;
+      line-height: 1.6;
+    }
+
+    /* Заголовки */
+    h1, h2, h3 {
+      color: #0E7AFE;
+      margin-bottom: 12px;
+    }
+    h1 {
+      font-size: 28px;
+      margin-bottom: 20px;
+    }
+    h2 {
+      font-size: 24px;
+      margin-top: 20px;
+      margin-bottom: 16px;
+    }
+    h3 {
+      font-size: 20px;
+      margin-top: 16px;
+      margin-bottom: 12px;
+    }
+
+    /* Стили для списка условий использования */
+    .content-container ol {
+      margin-left: 20px;
+      margin-bottom: 12px;
+    }
+    .content-container ol li {
+      font-size: 18px;
+      line-height: 1.6;
+      text-align: justify;
+      color: #aaa;  /* Базовый цвет – серый */
+      margin-bottom: 12px;
+    }
+    .content-container ol li::first-line {
+      color: #fff;  /* Первая строка – белая */
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Загрузочный экран -->
+  <div id="loader">
+    <img src="Cloud With Lightning.webp" alt="Loading...">
+  </div>
+
+  <div id="appWrapper">
+    <!-- Логотип -->
+    <div class="logo-container">
+      <img src="weblogo.png" alt="WebLogo">
+    </div>
+
+    <!-- Основной контейнер условий использования -->
+    <div class="content-container">
+      <h1>Условия использования</h1>
+      <ol>
+        <li>Продление подписки происходит вне зависимости от того, есть ли у вас сейчас активная подписка или нет.</li>
+        <li>Продление подписки произойдет только после регистрации друга в системе.</li>
+        <li>Продление подписки работает только по личной ссылке, указанной ниже.</li>
+        <li>В случае, если вы пригласили пользователя не по своей личной ссылке, продление подписки невозможно.</li>
+        <li>Команда ShmoneyVPN не несет ответственности за ненадлежащее использование функционала реферальной программы.</li>
+      </ol>
+    </div>
+  </div>
+
+  <script>
+    // Загрузочный экран: показываем loader на случайный промежуток времени от 2000 до 4000 мс
+    const randomTime = Math.floor(Math.random() * (4000 - 2000 + 1)) + 2000;
+    const loader = document.getElementById('loader');
+    const appWrapper = document.getElementById('appWrapper');
+
+    setTimeout(() => {
+      loader.style.opacity = '0';
+      setTimeout(() => {
+        loader.style.display = 'none';
+      }, 400);
+    }, randomTime);
+
+    // Инициализация Telegram WebApp
+    Telegram.WebApp.ready();
+  </script>
+</body>
+</html>
