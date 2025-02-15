@@ -132,6 +132,8 @@
     .noentry-bg { background-color: white; }
     .card-bg    { background-color: orange; }
     .refund-bg  { background-color: rgb(25, 225, 25); }
+    .cancel-bg  { background-color: #ff6666; }
+    .auto-bg    { background-color: #ffcc00; }
 
     .faq-icon-wrap {
       width: 30px; height: 30px; border-radius: 6px;
@@ -143,6 +145,8 @@
     .noentry-icon { width: 25px; height: 25px; }
     .card-icon    { width: 25px; height: 25px; }
     .refund-icon  { width: 25px; height: 25px; }
+    .cancel-icon  { width: 25px; height: 25px; }
+    .auto-icon    { width: 25px; height: 25px; }
 
     /* Стрелка справа */
     .arrow-icon {
@@ -279,6 +283,41 @@
             <path d="M1 1 L5 4 L1 7"/>
           </svg>
         </a>
+        
+        <!-- Новый вопрос 6: Как подключить автосписание? -->
+        <a href="#" class="faq-button" data-faq="7">
+          <div class="faq-left">
+            <div class="faq-icon-wrap auto-bg">
+              <!-- Иконка для автосписания, замените URL на нужный -->
+              <img 
+                src="https://www.svgrepo.com/show/439441/auto-renewal-2-circle-fill.svg"
+                alt="auto"
+                class="auto-icon"
+              >
+            </div>
+            <span>Как подключить автосписание?</span>
+          </div>
+          <svg class="arrow-icon" viewBox="0 0 6 8">
+            <path d="M1 1 L5 4 L1 7"/>
+          </svg>
+        </a>
+        <!-- Новый вопрос 7: Как отменить автосписание? -->
+        <a href="#" class="faq-button" data-faq="6">
+          <div class="faq-left">
+            <div class="faq-icon-wrap cancel-bg">
+              <!-- Иконка для отмены автосписания, замените URL на нужный -->
+              <img 
+                src="https://www.svgrepo.com/show/435594/cancel.svg"
+                alt="cancel"
+                class="cancel-icon"
+              >
+            </div>
+            <span>Как отменить автосписание?</span>
+          </div>
+          <svg class="arrow-icon" viewBox="0 0 6 8">
+            <path d="M1 1 L5 4 L1 7"/>
+          </svg>
+        </a>
       </div><!-- /.buttons-container -->
     </div>
   </div><!-- /#faqMainScreen -->
@@ -346,6 +385,34 @@
       </div>
     </div>
   </div>
+
+  <!-- Ответ #6: Как отменить автосписание? -->
+  <div id="faq6Screen" class="screen answer-screen">
+    <div>
+      <div class="instruction-line">
+Чтобы отменить автосписание, перейдите в меню бота <b>«Подписка»</b> и нажмите кнопку <b>«❌ Отменить подписку»</b>. После подтверждения отмены автосписания автоматическое продление подписки прекратится по окончании оплаченного периода, при этом доступ к услугам сохраняется до конца текущего периода.
+      </div>
+      <div class="instruction-line">
+Обратите внимание, что отмена автосписания оформляется без дополнительной оплаты, и повторное оформление автосписания возможно только после новой успешной оплаты.
+      </div>
+    </div>
+  </div>
+
+  <!-- Ответ #7: Как подключить автосписание? -->
+  <div id="faq7Screen" class="screen answer-screen">
+    <div>
+      <div class="instruction-line">
+Подключение автосписания происходит автоматически при оформлении подписки через бота платёжными средствами <b>«СБП»</b> и <b>«Карта»</b>. Ваше платежное средство сохраняется для последующего автоматического списания денежных средств за продление подписки.
+      </div>
+      <div class="instruction-line">
+Если вы хотите активировать автосписание, убедитесь, что все данные вашего платежного средства указаны корректно. После успешного оформления подписки автосписание будет производиться за 3 часа до окончания текущего оплаченного периода.
+      </div>
+      <div class="instruction-line">
+В случае возникновения вопросов или проблем с автосписанием, обратитесь в поддержку ShmoneyVPN.
+      </div>
+    </div>
+  </div>
+
 </div><!-- /#appWrapper -->
 
 <script>
@@ -371,19 +438,18 @@
   const faq3Screen    = document.getElementById('faq3Screen');
   const faq4Screen    = document.getElementById('faq4Screen');
   const faq5Screen    = document.getElementById('faq5Screen');
+  const faq6Screen    = document.getElementById('faq6Screen');
+  const faq7Screen    = document.getElementById('faq7Screen');
   
-  const answerScreens = [faq1Screen, faq2Screen, faq3Screen, faq4Screen, faq5Screen];
+  const answerScreens = [faq1Screen, faq2Screen, faq3Screen, faq4Screen, faq5Screen, faq6Screen, faq7Screen];
 
   // ===== Telegram WebApp READY =====
   Telegram.WebApp.ready();
 
   // Показать кнопку "Назад"
   function showBackButton() {
-    // Просто покажем, без setText
     Telegram.WebApp.BackButton.show();
-    // Навешиваем onClick
     Telegram.WebApp.BackButton.onClick(() => {
-      // При нажатии: скрываем ответ, показываем список, скрываем кнопку
       hideAllAnswerScreens();
       faqMainScreen.classList.add('active');
       Telegram.WebApp.BackButton.hide();
@@ -402,20 +468,19 @@
       event.preventDefault();
       const faqIndex = btn.getAttribute('data-faq');
       
-      // Скрываем список, скрываем все ответы
       faqMainScreen.classList.remove('active');
       hideAllAnswerScreens();
 
-      // Показываем нужный ответ
       switch (faqIndex) {
         case "1": faq1Screen.classList.add('active'); break;
         case "2": faq2Screen.classList.add('active'); break;
         case "3": faq3Screen.classList.add('active'); break;
         case "4": faq4Screen.classList.add('active'); break;
         case "5": faq5Screen.classList.add('active'); break;
+        case "6": faq6Screen.classList.add('active'); break;
+        case "7": faq7Screen.classList.add('active'); break;
       }
       
-      // Теперь при нажатии Telegram-кнопки — вернёмся к списку
       showBackButton();
     });
   });
